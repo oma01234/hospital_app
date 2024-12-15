@@ -1,0 +1,7 @@
+<!-- add_care_plan.html -->
+<h1>Create Care Plan for {{ patient.username }}</h1>
+<form method="POST">
+    {% csrf_token %}
+    <textarea name="plan_description" placeholder="Enter Care Plan Description"></textarea>
+    <button type="submit">Save Care Plan</button>
+</form>

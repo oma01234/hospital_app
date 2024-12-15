@@ -1,0 +1,7 @@
+<!-- add_progress_tracking.html -->
+<h1>Track Progress for {{ patient.username }}</h1>
+<form method="POST">
+    {% csrf_token %}
+    <textarea name="progress_notes" placeholder="Enter progress notes"></textarea>
+    <button type="submit">Save Progress</button>
+</form>

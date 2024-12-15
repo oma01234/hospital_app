@@ -1,0 +1,13 @@
+<!-- view_appointment.html -->
+<h1>Appointment Details</h1>
+<p>Patient: {{ appointment.patient.username }}</p>
+<p>Reason: {{ appointment.reason }}</p>
+<p>Status: {{ appointment.status }}</p>
+{% if note %}
+    <h3>Consultation Notes</h3>
+    <p>{{ note.note }}</p>
+    <p>Prescription: {{ note.prescription }}</p>
+    <p>Treatment Plan: {{ note.treatment_plan }}</p>
+{% else %}
+    <p>No consultation notes available.</p>
+{% endif %}

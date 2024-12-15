@@ -1,0 +1,12 @@
+<h1>Hospital Dashboard</h1>
+<h2>Real-Time Metrics</h2>
+<p>Bed Occupancy: {{ metrics.bed_occupancy }}</p>
+<p>Staff Available: {{ metrics.staff_available }}</p>
+<p>Patient Flow: {{ metrics.patient_flow }}</p>
+
+<h2>Performance Analytics</h2>
+<ul>
+    {% for analytic in analytics %}
+        <li>Report Date: {{ analytic.report_date }} - Satisfaction: {{ analytic.patient_satisfaction_score }}</li>
+    {% endfor %}
+</ul>

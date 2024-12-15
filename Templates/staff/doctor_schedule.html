@@ -1,0 +1,11 @@
+<!-- doctor_schedule.html -->
+<h1>Manage Your Schedule</h1>
+<form method="POST">
+    {% csrf_token %}
+    <label for="monday_start">Monday Start Time:</label>
+    <input type="time" name="monday_start" value="{{ schedule.monday_start }}">
+    <label for="monday_end">Monday End Time:</label>
+    <input type="time" name="monday_end" value="{{ schedule.monday_end }}">
+    <!-- Repeat for other days -->
+    <button type="submit">Save Schedule</button>
+</form>

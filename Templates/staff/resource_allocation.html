@@ -1,0 +1,21 @@
+<h1>Resource Allocation</h1>
+<table>
+    <thead>
+        <tr>
+            <th>Resource Type</th>
+            <th>Resource Name</th>
+            <th>Allocated</th>
+            <th>Allocated To</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for resource in resources %}
+            <tr>
+                <td>{{ resource.resource_type }}</td>
+                <td>{{ resource.resource_name }}</td>
+                <td>{{ resource.is_allocated }}</td>
+                <td>{{ resource.allocated_to }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

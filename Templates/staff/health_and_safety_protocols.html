@@ -1,0 +1,13 @@
+{% extends 'base_generic.html' %}
+
+{% block content %}
+  <h1>Health & Safety Protocols</h1>
+  <ul>
+    {% for protocol in protocols %}
+      <li>
+        <h3>{{ protocol.name }}</h3>
+        <p>{{ protocol.description }}</p>
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock %}

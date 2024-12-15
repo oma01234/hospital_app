@@ -1,0 +1,16 @@
+<h2>Insurance Verification</h2>
+
+{% if insurance %}
+  <p><strong>Provider:</strong> {{ insurance.insurance_provider }}</p>
+  <p><strong>Policy Number:</strong> {{ insurance.policy_number }}</p>
+  <p><strong>Coverage Details:</strong> {{ insurance.coverage_details }}</p>
+
+  <!-- Button to verify insurance -->
+  <form method="POST" action="{% url 'verify_insurance' insurance.id %}">
+    {% csrf_token %}
+    <button type="submit">Verify Insurance</button>
+  </form>
+
+{% else %}
+  <p>{{ error }}</p>
+{% endif %}

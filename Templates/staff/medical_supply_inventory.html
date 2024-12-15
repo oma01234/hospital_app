@@ -1,0 +1,29 @@
+<h1>Medical Supply Inventory</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Quantity in Stock</th>
+            <th>Reorder Level</th>
+            <th>Unit Price</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for supply in supplies %}
+            <tr>
+                <td>{{ supply.name }}</td>
+                <td>{{ supply.description }}</td>
+                <td>{{ supply.quantity_in_stock }}</td>
+                <td>{{ supply.reorder_level }}</td>
+                <td>${{ supply.unit_price }}</td>
+                <td>
+                    <a href="{% url 'edit_supply' supply.id %}">Edit</a> |
+                    <a href="{% url 'delete_supply' supply.id %}">Delete</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

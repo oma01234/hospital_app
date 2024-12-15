@@ -1,0 +1,10 @@
+<!-- patient_assignments.html -->
+<h1>Assigned Patients</h1>
+<ul>
+    {% for assignment in assignments %}
+        <li>
+            <strong>{{ assignment.patient.username }}</strong> -
+            <a href="{% url 'manage_patient_assignment' assignment.id %}">Manage Assignment</a>
+        </li>
+    {% endfor %}
+</ul>

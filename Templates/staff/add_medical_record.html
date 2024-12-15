@@ -1,0 +1,11 @@
+<!-- add_medical_record.html -->
+<h1>Create Medical Record for {{ patient.username }}</h1>
+<form method="POST">
+    {% csrf_token %}
+    <textarea name="diagnoses" placeholder="Diagnoses"></textarea>
+    <textarea name="treatment_history" placeholder="Treatment History"></textarea>
+    <textarea name="allergies" placeholder="Allergies"></textarea>
+    <textarea name="family_history" placeholder="Family History"></textarea>
+    <textarea name="medications" placeholder="Medications"></textarea>
+    <button type="submit">Save Medical Record</button>
+</form>

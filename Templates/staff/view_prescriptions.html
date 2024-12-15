@@ -1,0 +1,9 @@
+<!-- view_prescriptions.html -->
+<h1>Prescriptions for {{ prescriptions.0.patient.username }}</h1>
+{% for prescription in prescriptions %}
+    <p><strong>Medication:</strong> {{ prescription.medication_name }}</p>
+    <p><strong>Dosage:</strong> {{ prescription.dosage }}</p>
+    <p><strong>End Date:</strong> {{ prescription.end_date }}</p>
+    <p><strong>Instructions:</strong> {{ prescription.instructions }}</p>
+    <hr>
+{% endfor %}

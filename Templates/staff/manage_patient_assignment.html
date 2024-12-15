@@ -1,0 +1,7 @@
+<!-- manage_patient_assignment.html -->
+<h1>Manage Assignment for {{ assignment.patient.username }}</h1>
+<form method="POST">
+    {% csrf_token %}
+    <textarea name="notes" placeholder="Enter notes">{{ assignment.notes }}</textarea>
+    <button type="submit">Save Changes</button>
+</form>

@@ -1,0 +1,25 @@
+{% extends "staff/base_hospital_app.html" %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="text-center text-danger mb-4">Admin Dashboard</h1>
+    <div class="card border-danger mb-3">
+        <div class="card-header bg-danger text-white">
+            <h4>Manage Staff</h4>
+        </div>
+        <div class="card-body">
+            <p class="card-text">Add, update, or remove staff accounts and roles.</p>
+            <a href="{% url 'staff:manage' %}" class="btn btn-danger">Manage Staff</a>
+        </div>
+    </div>
+    <div class="card border-danger mb-3">
+        <div class="card-header bg-danger text-white">
+            <h4>System Reports</h4>
+        </div>
+        <div class="card-body">
+            <p class="card-text">Review hospital activity reports and metrics.</p>
+            <a href="{% url 'reports:system' %}" class="btn btn-danger">View Reports</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

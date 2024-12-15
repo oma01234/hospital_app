@@ -1,0 +1,15 @@
+{% extends 'base_generic.html' %}
+
+{% block content %}
+  <h1>Staff Members</h1>
+  <ul>
+    {% for staff_member in staff %}
+      <li>
+        <h3>{{ staff_member.first_name }} {{ staff_member.last_name }}</h3>
+        <p>{{ staff_member.job_title }}</p>
+        <p>Email: {{ staff_member.email }}</p>
+        <p>Phone: {{ staff_member.phone_number }}</p>
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends 'base_generic.html' %}
+
+{% block content %}
+  <h1>Infection Control Practices</h1>
+  <ul>
+    {% for practice in practices %}
+      <li>
+        <h3>{{ practice.name }}</h3>
+        <p>{{ practice.description }}</p>
+        <p>Compliant: {{ practice.is_compliant }}</p>
+        <p>Last Audited: {{ practice.last_audited }}</p>
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock %}

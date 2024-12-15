@@ -1,0 +1,10 @@
+<!-- view_vitals.html -->
+<h1>Vitals for {{ vitals.0.patient.username }}</h1>
+{% for vital in vitals %}
+    <p><strong>Blood Pressure:</strong> {{ vital.blood_pressure }}</p>
+    <p><strong>Temperature:</strong> {{ vital.temperature }} °C</p>
+    <p><strong>Pulse:</strong> {{ vital.pulse }} bpm</p>
+    <p><strong>Weight:</strong> {{ vital.weight }} kg</p>
+    <p><strong>Oxygen Saturation:</strong> {{ vital.oxygen_saturation }}%</p>
+    <hr>
+{% endfor %}

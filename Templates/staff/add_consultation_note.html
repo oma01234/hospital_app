@@ -1,0 +1,9 @@
+<!-- add_consultation_note.html -->
+<h1>Add Consultation Note</h1>
+<form method="POST">
+    {% csrf_token %}
+    <textarea name="note" placeholder="Enter your consultation note..."></textarea>
+    <textarea name="prescription" placeholder="Enter prescription..."></textarea>
+    <textarea name="treatment_plan" placeholder="Enter treatment plan..."></textarea>
+    <button type="submit">Save Note</button>
+</form>

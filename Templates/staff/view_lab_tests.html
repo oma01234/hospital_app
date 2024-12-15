@@ -1,0 +1,12 @@
+<!-- view_lab_tests.html -->
+<h1>Lab Tests for {{ lab_tests.0.patient.username }}</h1>
+{% for test in lab_tests %}
+    <p><strong>Test Name:</strong> {{ test.test_name }}</p>
+    <p><strong>Status:</strong> {{ test.status }}</p>
+    {% if test.status == 'completed' %}
+        <p><strong>Findings:</strong> {{ test.result.findings }}</p>
+    {% else %}
+        <a href="{% url 'add_lab_result' test.id %}">Add Result</a>
+    {% endif %}
+    <hr>
+{% endfor %}

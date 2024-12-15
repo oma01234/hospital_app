@@ -1,0 +1,13 @@
+<!-- appointments/emergency_contact.html -->
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Your Emergency Contact Details</h2>
+    {% if emergency_service %}
+        <p><strong>Emergency Type:</strong> {{ emergency_service.emergency_type }}</p>
+        <p><strong>Location:</strong> {{ emergency_service.location }}</p>
+        <p><strong>Request Time:</strong> {{ emergency_service.request_time }}</p>
+    {% else %}
+        <p>No emergency contact details found.</p>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends 'base_generic.html' %}
+
+{% block content %}
+  <h1>{{ staff.first_name }} {{ staff.last_name }}'s Certifications</h1>
+  <ul>
+    {% for cert in staff.certifications.all %}
+      <li>
+        <h3>{{ cert.name }}</h3>
+        <p>Expires on: {{ cert.expiration_date }}</p>
+        <p>Valid: {{ cert.is_valid }}</p>
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock %}

@@ -1,0 +1,8 @@
+<!-- add_lab_result.html -->
+<h1>Enter Lab Result for {{ lab_test.test_name }}</h1>
+<form method="POST">
+    {% csrf_token %}
+    <textarea name="result_data" placeholder="Result Data"></textarea>
+    <textarea name="findings" placeholder="Findings"></textarea>
+    <button type="submit">Save Result</button>
+</form>

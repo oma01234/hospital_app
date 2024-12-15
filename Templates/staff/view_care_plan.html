@@ -1,0 +1,7 @@
+<!-- view_care_plan.html -->
+<h1>Care Plan for {{ care_plans.0.patient.username }}</h1>
+{% for plan in care_plans %}
+    <p><strong>Description:</strong> {{ plan.plan_description }}</p>
+    <p><strong>Created At:</strong> {{ plan.created_at }}</p>
+    <hr>
+{% endfor %}

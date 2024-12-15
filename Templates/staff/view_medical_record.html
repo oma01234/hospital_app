@@ -1,0 +1,10 @@
+<!-- view_medical_record.html -->
+<h1>Medical Record for {{ medical_records.0.patient.username }}</h1>
+{% for record in medical_records %}
+    <p><strong>Diagnoses:</strong> {{ record.diagnoses }}</p>
+    <p><strong>Treatment History:</strong> {{ record.treatment_history }}</p>
+    <p><strong>Allergies:</strong> {{ record.allergies }}</p>
+    <p><strong>Family History:</strong> {{ record.family_history }}</p>
+    <p><strong>Medications:</strong> {{ record.medications }}</p>
+    <hr>
+{% endfor %}

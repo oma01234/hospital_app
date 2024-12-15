@@ -1,0 +1,19 @@
+<!-- notifications.html -->
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h2>Notifications</h2>
+  <ul>
+    {% for notification in notifications %}
+      <li>
+        <strong>{{ notification.notification_type }}:</strong> {{ notification.message }}
+        <p>Received on: {{ notification.created_at }}</p>
+        {% if notification.is_urgent %}
+          <span class="urgent">Urgent</span>
+        {% endif %}
+      </li>
+    {% empty %}
+      <p>No notifications.</p>
+    {% endfor %}
+  </ul>
+{% endblock %}

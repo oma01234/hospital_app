@@ -1,0 +1,10 @@
+<!-- prescribe_medication.html -->
+<h1>Prescribe Medication for {{ patient.username }}</h1>
+<form method="POST">
+    {% csrf_token %}
+    <input type="text" name="medication_name" placeholder="Medication Name">
+    <input type="text" name="dosage" placeholder="Dosage">
+    <input type="date" name="end_date">
+    <textarea name="instructions" placeholder="Instructions"></textarea>
+    <button type="submit">Prescribe Medication</button>
+</form>

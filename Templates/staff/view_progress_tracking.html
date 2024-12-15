@@ -1,0 +1,7 @@
+<!-- view_progress_tracking.html -->
+<h1>Progress Tracking for {{ progress_reports.0.patient.username }}</h1>
+{% for report in progress_reports %}
+    <p><strong>Notes:</strong> {{ report.progress_notes }}</p>
+    <p><strong>Recorded At:</strong> {{ report.recorded_at }}</p>
+    <hr>
+{% endfor %}

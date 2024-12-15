@@ -1,0 +1,11 @@
+<!-- add_vitals.html -->
+<h1>Record Vitals for {{ patient.username }}</h1>
+<form method="POST">
+    {% csrf_token %}
+    <input type="text" name="blood_pressure" placeholder="Blood Pressure">
+    <input type="number" name="temperature" step="0.01" placeholder="Temperature">
+    <input type="number" name="pulse" placeholder="Pulse">
+    <input type="number" name="weight" step="0.01" placeholder="Weight (kg)">
+    <input type="number" name="oxygen_saturation" step="0.01" placeholder="Oxygen Saturation">
+    <button type="submit">Save Vitals</button>
+</form>

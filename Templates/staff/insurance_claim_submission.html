@@ -1,0 +1,14 @@
+<h1>Insurance Claim Submission for Bill #{{ bill.id }}</h1>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Submit Claim</button>
+</form>
+
+<h2>Existing Claims</h2>
+<ul>
+    {% for claim in claims %}
+        <li>Claim ID: {{ claim.id }} - Status: {{ claim.status }} - Date Submitted: {{ claim.date_submitted }}</li>
+    {% endfor %}
+</ul>

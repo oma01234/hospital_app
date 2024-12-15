@@ -1,0 +1,27 @@
+{% extends "patients/base.html" %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="text-center text-primary mb-4">Health Reports</h2>
+    {% if reports.exists %}
+        <div class="row">
+            {% for report in reports %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title text-primary">{{ report.title }}</h5>
+                        <p class="card-text">{{ report.description|truncatewords:20 }}</p>
+                        <p class="text-muted"><strong>Date:</strong> {{ report.date }}</p>
+                        <a href="{{ report.document.url }}" class="btn btn-primary" target="_blank">View Full Report</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-warning text-center" role="alert">
+            No health reports available.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

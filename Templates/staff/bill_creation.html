@@ -1,0 +1,25 @@
+<h2>Bill Creation & Tracking</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Bill Number</th>
+      <th>Date Created</th>
+      <th>Total Amount</th>
+      <th>Status</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for bill in bills %}
+    <tr>
+      <td>{{ bill.bill_number }}</td>
+      <td>{{ bill.date_created }}</td>
+      <td>{{ bill.total_amount }}</td>
+      <td>{{ bill.status }}</td>
+      <td>
+        <a href="{% url 'bill_detail' bill.id %}">View</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>

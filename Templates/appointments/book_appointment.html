@@ -1,0 +1,24 @@
+{% extends 'patients/base.html' %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="text-primary mb-4">Book an Appointment</h2>
+    <form method="post" class="mb-4">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary w-100">Book Appointment</button>
+        <br>
+    </form>
+
+    <br>
+    <div class="d-flex flex-column align-items-center">
+        <a href="{% url 'appointments:appointment_list' %}" class="btn btn-secondary mb-2 w-75">View Appointment List</a>
+        <a href="{% url 'appointments:consultation_history' %}" class="btn btn-secondary mb-2 w-75">View Consultation History</a>
+        <a href="{% url 'appointments:book_virtual_consultation' %}" class="btn btn-secondary mb-2 w-75">Book Virtual Consultation</a>
+        <a href="#" class="btn btn-secondary mb-2 w-75">Add Consultation Note</a>
+    </div>
+    <br>
+</div>
+<br>
+{% endblock %}
+

@@ -1,0 +1,29 @@
+<h1>Emergency Alerts</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>Alert Type</th>
+            <th>Message</th>
+            <th>Status</th>
+            <th>Created At</th>
+            <th>Resolved At</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for alert in alerts %}
+            <tr>
+                <td>{{ alert.get_alert_type_display }}</td>
+                <td>{{ alert.message }}</td>
+                <td>{{ alert.status }}</td>
+                <td>{{ alert.created_at }}</td>
+                <td>{{ alert.resolved_at }}</td>
+                <td>
+                    <a href="{% url 'acknowledge_alert' alert.id %}">Acknowledge</a> |
+                    <a href="{% url 'resolve_alert' alert.id %}">Resolve</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

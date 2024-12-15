@@ -1,0 +1,7 @@
+<!-- order_lab_test.html -->
+<h1>Order Lab Test for {{ patient.username }}</h1>
+<form method="POST">
+    {% csrf_token %}
+    <input type="text" name="test_name" placeholder="Test Name">
+    <button type="submit">Order Test</button>
+</form>

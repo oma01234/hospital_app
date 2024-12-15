@@ -1,0 +1,20 @@
+{% extends "patients/base.html" %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="text-center text-primary mb-4">Add Consultation Note</h2>
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Appointment Details</h5>
+            <p><strong>Doctor:</strong> {{ appointment.doctor_name }}</p>
+            <p><strong>Date:</strong> {{ appointment.date }}</p>
+            <p><strong>Time:</strong> {{ appointment.time }}</p>
+        </div>
+    </div>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary w-100">Save Note</button>
+    </form>
+</div>
+{% endblock %}

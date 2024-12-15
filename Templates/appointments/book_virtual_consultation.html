@@ -1,0 +1,10 @@
+{% extends "patients/base.html" %}
+
+{% block content %}
+<h2>Book a Virtual Consultation</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Book Appointment</button>
+</form>
+{% endblock %}

@@ -1,0 +1,18 @@
+<!-- templates/audit_logs/audit_log_detail.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audit Log Detail</title>
+</head>
+<body>
+    <h1>Audit Log Detail</h1>
+    <p><strong>ID:</strong> {{ log.id }}</p>
+    <p><strong>Action:</strong> {{ log.action }}</p>
+    <p><strong>User:</strong> {{ log.user }}</p>
+    <p><strong>Timestamp:</strong> {{ log.timestamp }}</p>
+    <p><strong>Details:</strong> {{ log.details }}</p>
+    <a href="{% url 'audit_log_list' %}">Back to Audit Logs</a>
+</body>
+</html>

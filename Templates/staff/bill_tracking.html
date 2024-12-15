@@ -1,0 +1,14 @@
+<h1>Bill Tracking for {{ patient.user.username }}</h1>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Create Bill</button>
+</form>
+
+<h2>Existing Bills</h2>
+<ul>
+    {% for bill in bills %}
+        <li>Bill ID: {{ bill.id }} - Amount: {{ bill.total_amount }} - Status: {{ bill.status }}</li>
+    {% endfor %}
+</ul>

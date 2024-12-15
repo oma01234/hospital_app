@@ -1,0 +1,25 @@
+{% extends "staff/base_hospital_app.html" %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="text-center text-primary mb-4">Doctor Dashboard</h1>
+    <div class="card border-primary mb-3">
+        <div class="card-header bg-primary text-white">
+            <h4>Patient Management</h4>
+        </div>
+        <div class="card-body">
+            <p class="card-text">Access patient records, write prescriptions, and monitor treatment plans.</p>
+            <a href="{% url 'records:medical_records' %}" class="btn btn-primary">View Medical Records</a>
+        </div>
+    </div>
+    <div class="card border-primary mb-3">
+        <div class="card-header bg-primary text-white">
+            <h4>Appointment Schedule</h4>
+        </div>
+        <div class="card-body">
+            <p class="card-text">View your daily appointments and consultation history.</p>
+            <a href="{% url 'appointments:appointment_list' %}" class="btn btn-primary">View Appointments</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

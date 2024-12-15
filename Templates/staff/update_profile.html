@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Update Your Profile</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save Changes</button>
+  </form>
+
+  <h3>Your Current Profile</h3>
+  <p><strong>Phone Number:</strong> {{ profile.phone_number }}</p>
+  <p><strong>Emergency Contact:</strong> {{ profile.emergency_contact }}</p>
+  <p><strong>Medical History:</strong> {{ profile.medical_history }}</p>
+  <p><strong>Allergies:</strong> {{ profile.allergies }}</p>
+  <p><strong>Insurance Details:</strong> {{ profile.insurance_details }}</p>
+
+{% endblock %}
