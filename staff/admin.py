@@ -4,12 +4,8 @@ from django.contrib.auth.admin import UserAdmin
 # Register your models here
 
 # Register the custom admin for Staff
-class CustomUserAdmin(UserAdmin):
-    list_display = ['username', 'email', 'is_active', 'role']
-    search_fields = ['username', 'email']
 
-admin.site.register(Staff, CustomUserAdmin)  # Register the Staff model with CustomUserAdmin
-
+admin.site.register(Staff)  # Register the Staff model
 admin.site.register(DoctorSchedule)
 admin.site.register(Appointment)
 admin.site.register(ConsultationNote)

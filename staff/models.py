@@ -1,54 +1,45 @@
 # models.py
-from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.db import models
-from django.contrib.auth import get_user_model
-from datetime import time
 from patients.models import Profile
 from django.conf import settings
+from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 
 
-class Staff(AbstractUser):
+
+
+class Staff(models.Model):
     ROLE_CHOICES = (
         ('doctor', 'Doctor'),
         ('nurse', 'Nurse'),
         ('admin', 'Administrator'),
     )
 
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="staff_profile")
     role = models.CharField(max_length=20, choices=ROLE_CHOICES)
     specialty = models.CharField(max_length=100, blank=True, null=True)  # Only for doctors
     phone_number = models.CharField(max_length=15)
     profile_picture = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
-    groups = models.ManyToManyField(Group, related_name='staff_members', blank=True)
-    user_permissions = models.ManyToManyField(
-        Permission,
-        related_name='staff_permissions',  # Custom related_name to resolve the user_permissions conflict
-        blank=True
-    )
-    email = models.EmailField()
 
     def __str__(self):
-        return self.username
+        return f"{self.user.username} ({self.role})"
 
 
 class DoctorSchedule(models.Model):
-    doctor = models.OneToOneField('staff.Staff', on_delete=models.CASCADE, related_name='schedule')
-    monday_start = models.TimeField(default=time(8, 0))
-    monday_end = models.TimeField(default=time(17, 0))
-    tuesday_start = models.TimeField(default=time(8, 0))
-    tuesday_end = models.TimeField(default=time(17, 0))
-    wednesday_start = models.TimeField(default=time(8, 0))
-    wednesday_end = models.TimeField(default=time(17, 0))
-    thursday_start = models.TimeField(default=time(8, 0))
-    thursday_end = models.TimeField(default=time(17, 0))
-    friday_start = models.TimeField(default=time(8, 0))
-    friday_end = models.TimeField(default=time(17, 0))
-    saturday_start = models.TimeField(default=time(8, 0))
-    saturday_end = models.TimeField(default=time(17, 0))
-    sunday_start = models.TimeField(default=time(0, 0))
-    sunday_end = models.TimeField(default=time(0, 0))
+    def clean(self):
+        # Ensure only doctors can have a schedule
+        if self.doctor.role != 'doctor':
+            raise ValidationError("Only staff members with the role 'Doctor' can have a schedule.")
+
+        # Ensure start times are before end times
+        for day in ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']:
+            start_time = getattr(self, f"{day}_start")
+            end_time = getattr(self, f"{day}_end")
+            if start_time >= end_time:
+                raise ValidationError(f"Invalid schedule: {day.capitalize()} start time must be before end time.")
 
     def __str__(self):
-        return f"Schedule for {self.doctor.username}"
+        return f"Schedule for {self.doctor.user.username}"
 
 
 class Appointment(models.Model):

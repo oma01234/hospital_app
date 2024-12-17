@@ -11,6 +11,8 @@ from django.shortcuts import render, get_object_or_404
 from .forms import *
 from django.http import FileResponse
 from django.contrib.auth import logout
+from django.contrib import messages
+
 
 def register(request):
     if request.method == 'POST':
@@ -26,7 +28,6 @@ def register(request):
         form = StaffUserCreationForm()
 
     return render(request, 'staff/register.html', {'form': form})
-
 
 
 # Login view
@@ -46,6 +47,7 @@ def login_view(request):
 
     return render(request, 'staff/login.html', {'form': form})
 
+
 def logout_view(request):
     # Log out the user
     logout(request)
@@ -57,11 +59,11 @@ def logout_view(request):
 @login_required
 def staff_dashboard(request):
     # Check the user's role
-    if request.user.role == 'doctor':
+    if request.user.staff_profile.role == 'doctor':
         return render(request, 'staff/doctor_dashboard.html')
-    elif request.user.role == 'nurse':
+    elif request.user.staff_profile.role == 'nurse':
         return render(request, 'staff/nurse_dashboard.html')
-    elif request.user.role == 'admin':
+    elif request.user.staff_profile.role == 'admin':
         return render(request, 'staff/admin_dashboard.html')
     else:
         return HttpResponseForbidden("You don't have permission to view this page.")
@@ -78,18 +80,42 @@ def doctor_view(request):
 
 @login_required
 def doctor_schedule(request):
+    # Ensure the user is a doctor
+    if not hasattr(request.user, 'staff_profile') or request.user.staff_profile.role != 'doctor':
+        return redirect('staff:unauthorized')  # Or return an appropriate HTTP 403 response
+
+    # Get or create the doctor's schedule
     schedule, created = DoctorSchedule.objects.get_or_create(doctor=request.user)
 
     if request.method == 'POST':
-        schedule.monday_start = request.POST.get('monday_start')
-        schedule.monday_end = request.POST.get('monday_end')
-        schedule.tuesday_start = request.POST.get('tuesday_start')
-        schedule.tuesday_end = request.POST.get('tuesday_end')
-        # Repeat for other days
+        days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
+        for day in days:
+            start_time = request.POST.get(f'{day}_start')
+            end_time = request.POST.get(f'{day}_end')
+
+            # Validate the input
+            if start_time and end_time:
+                if start_time >= end_time:
+                    messages.error(request, f"{day.capitalize()} start time must be earlier than end time.")
+                    return render(request, 'staff/doctor_schedule.html', {'schedule': schedule})
+
+                # Set the attributes dynamically
+                setattr(schedule, f'{day}_start', start_time)
+                setattr(schedule, f'{day}_end', end_time)
+            elif start_time or end_time:
+                messages.error(request, f"Both start and end times must be filled for {day.capitalize()}.")
+                return render(request, 'staff/doctor_schedule.html', {'schedule': schedule})
+
+        # Save the schedule if validation passes
         schedule.save()
+        messages.success(request, "Schedule updated successfully!")
         return redirect('doctor_schedule')
 
     return render(request, 'staff/doctor_schedule.html', {'schedule': schedule})
+
+
+def unauthorized(request):
+    return render(request, 'staff/unauthorized.html', status=403)
 
 
 def assign_appointment(patient, reason, date_time):
@@ -117,6 +143,7 @@ def view_appointment(request, appointment_id):
 
     note = ConsultationNote.objects.filter(appointment=appointment).first()
     return render(request, 'staff/view_appointment.html', {'appointment': appointment, 'note': note})
+
 
 @login_required
 def add_consultation_note(request, appointment_id):
@@ -146,6 +173,7 @@ def patient_assignments(request):
     # Retrieve all the patients assigned to the logged-in doctor
     assignments = Assignment.objects.filter(doctor=request.user)
     return render(request, 'staff/patient_assignments.html', {'assignments': assignments})
+
 
 @login_required
 def manage_patient_assignment(request, assignment_id):
@@ -178,6 +206,7 @@ def add_vitals(request, patient_id):
         return redirect('view_vitals', patient_id=patient.id)
     return render(request, 'staff/add_vitals.html', {'patient': patient})
 
+
 @login_required
 def add_progress_tracking(request, patient_id):
     patient = get_object_or_404(User, id=patient_id)
@@ -192,10 +221,12 @@ def add_progress_tracking(request, patient_id):
         return redirect('view_progress_tracking', patient_id=patient.id)
     return render(request, 'staff/add_progress_tracking.html', {'patient': patient})
 
+
 @login_required
 def view_vitals(request, patient_id):
     vitals = VitalSign.objects.filter(patient_id=patient_id)
     return render(request, 'view_vitals.html', {'vitals': vitals})
+
 
 @login_required
 def view_progress_tracking(request, patient_id):
@@ -215,6 +246,7 @@ def add_care_plan(request, patient_id):
         )
         return redirect('view_care_plan', patient_id=patient.id)
     return render(request, 'staff/add_care_plan.html', {'patient': patient})
+
 
 @login_required
 def view_care_plan(request, patient_id):
@@ -243,6 +275,7 @@ def add_medical_record(request, patient_id):
         return redirect('view_medical_record', patient_id=patient.id)
     return render(request, 'staff/add_medical_record.html', {'patient': patient})
 
+
 @login_required
 def view_medical_record(request, patient_id):
     medical_records = MedicalRecord.objects.filter(patient_id=patient_id)
@@ -263,10 +296,12 @@ def order_lab_test(request, patient_id):
         return redirect('view_lab_tests', patient_id=patient.id)
     return render(request, 'staff/order_lab_test.html', {'patient': patient})
 
+
 @login_required
 def view_lab_tests(request, patient_id):
     lab_tests = LabTest.objects.filter(patient_id=patient_id)
     return render(request, 'staff/view_lab_tests.html', {'lab_tests': lab_tests})
+
 
 @login_required
 def add_lab_result(request, lab_test_id):
@@ -304,6 +339,7 @@ def prescribe_medication(request, patient_id):
         )
         return redirect('view_prescriptions', patient_id=patient.id)
     return render(request, 'staff/prescribe_medication.html', {'patient': patient})
+
 
 @login_required
 def view_prescriptions(request, patient_id):
@@ -470,6 +506,7 @@ def update_profile(request):
         form = ProfileUpdateForm(instance=profile)
 
     return render(request, 'profile/update_profile.html', {'form': form, 'profile': profile})
+
 
 def audit_log_list(request):
     logs = AuditLog.objects.all()

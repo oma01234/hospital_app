@@ -131,4 +131,6 @@ urlpatterns = [
     path('emergency-alerts/', EmergencyAlertListView.as_view(), name='emergency_alert_list'),
     path('emergency-alerts/update/<int:pk>/', EmergencyAlertUpdateView.as_view(), name='emergency_alert_update'),
 
+    path('unauthorized/', views.unauthorized, name='unauthorized'),
+
 ]

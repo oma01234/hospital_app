@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .section-title {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #555;
+        }
+        .card {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px;
+            border-radius: 8px;
+            background-color: #fafafa;
+        }
+        .card h3 {
+            margin-top: 0;
+        }
+        .card a {
+            text-decoration: none;
+            color: #007bff;
+            font-weight: bold;
+        }
+        .card a:hover {
+            text-decoration: underline;
+        }
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <h1>Welcome, {{ user.username }}</h1>
+
+        <!-- Section: Appointments -->
+        <div>
+            <h2 class="section-title">Appointments</h2>
+            <div class="dashboard-grid">
+                <div class="card">
+                    <h3>View Your Appointments</h3>
+                    <a href="{% url 'patient_assignments' %}">View Assigned Appointments</a>
+                </div>
+                <div class="card">
+                    <h3>Manage Schedule</h3>
+                    <a href="{% url 'doctor_schedule' %}">Edit Work Schedule</a>
+                </div>
+                <div class="card">
+                    <h3>Add Consultation Notes</h3>
+                    <a href="#">Go to Appointments</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section: Patient Management -->
+        <div>
+            <h2 class="section-title">Patient Management</h2>
+            <div class="dashboard-grid">
+                <div class="card">
+                    <h3>Vitals</h3>
+                    <a href="{% url 'add_vitals' patient_id=1 %}">Add Vitals</a>
+                    <br>
+                    <a href="{% url 'view_vitals' patient_id=1 %}">View Vitals</a>
+                </div>
+                <div class="card">
+                    <h3>Progress Tracking</h3>
+                    <a href="{% url 'add_progress_tracking' patient_id=1 %}">Add Progress</a>
+                    <br>
+                    <a href="{% url 'view_progress_tracking' patient_id=1 %}">View Progress</a>
+                </div>
+                <div class="card">
+                    <h3>Care Plans</h3>
+                    <a href="{% url 'add_care_plan' patient_id=1 %}">Add Care Plan</a>
+                    <br>
+                    <a href="{% url 'view_care_plan' patient_id=1 %}">View Care Plan</a>
+                </div>
+                <div class="card">
+                    <h3>Medical Records</h3>
+                    <a href="{% url 'add_medical_record' patient_id=1 %}">Add Medical Record</a>
+                    <br>
+                    <a href="{% url 'view_medical_record' patient_id=1 %}">View Medical Records</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section: Quick Access -->
+        <div>
+            <h2 class="section-title">Quick Access</h2>
+            <div class="dashboard-grid">
+                <div class="card">
+                    <h3>View Unauthorized Page</h3>
+                    <a href="{% url 'unauthorized' %}">Test Unauthorized Access</a>
+                </div>
+                <div class="card">
+                    <h3>Log Out</h3>
+                    <a href="{% url 'logout' %}">Log Out</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

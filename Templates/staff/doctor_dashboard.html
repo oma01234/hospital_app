@@ -1,25 +1,21 @@
-{% extends "staff/base_hospital_app.html" %}
+{% extends 'staff/base.html' %}
+
+{% block title %} Doctor Dashboard {% endblock %}
 
 {% block content %}
-<div class="container my-5">
-    <h1 class="text-center text-primary mb-4">Doctor Dashboard</h1>
-    <div class="card border-primary mb-3">
-        <div class="card-header bg-primary text-white">
-            <h4>Patient Management</h4>
-        </div>
-        <div class="card-body">
-            <p class="card-text">Access patient records, write prescriptions, and monitor treatment plans.</p>
-            <a href="{% url 'records:medical_records' %}" class="btn btn-primary">View Medical Records</a>
-        </div>
-    </div>
-    <div class="card border-primary mb-3">
-        <div class="card-header bg-primary text-white">
-            <h4>Appointment Schedule</h4>
-        </div>
-        <div class="card-body">
-            <p class="card-text">View your daily appointments and consultation history.</p>
-            <a href="{% url 'appointments:appointment_list' %}" class="btn btn-primary">View Appointments</a>
-        </div>
-    </div>
-</div>
+    <h1>Welcome, Dr. {{ user.first_name }}</h1>
+    <p>Here are your tasks for today:</p>
+
+    <!-- Display doctor-specific tasks, like patient lists, prescriptions, etc. -->
+    <ul>
+        <li><a href="{% url 'order_lab_test' patient_id=1 %}">Order Lab Test</a></li>
+        <li><a href="{% url 'add_lab_result' lab_test_id=1 %}">Add Lab Result</a></li>
+        <li><a href="{% url 'prescribe_medication' patient_id=1 %}">Prescribe Medication</a></li>
+        <li><a href="{% url 'view_prescriptions' patient_id=1 %}">View Prescriptions</a></li>
+        <li><a href="{% url 'doctor_patient_messages' patient_id=1 %}">Patient Messages</a></li>
+        <li><a href="{% url 'health_and_safety_protocols' %}">Health & Safety Protocols</a></li>
+        <li><a href="{% url 'infection_control_practices' %}">Infection Control Practices</a></li>
+        <li><a href="{% url 'staff_certifications' staff_id=1 %}">Staff Certifications</a></li>
+        <li><a href="{% url 'notifications' %}">Notifications</a></li>
+    </ul>
 {% endblock %}

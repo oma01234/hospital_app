@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %} Dashboard {% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <header>
+        <nav>
+            <ul>
+                <li><a href="{% url 'home' %}">Home</a></li>
+                <li><a href="{% url 'profile' %}">Profile</a></li> <!--I might need to remove this -->
+                <li><a href="{% url 'logout' %}">Logout</a></li>
+                <!-- Add links based on user role -->
+                <!--I might need to remove this guy too since the page is going to redirect the user based on their roles -->
+                {% if user.role == 'doctor' %}
+                    <li><a href="{% url 'doctor_dashboard' %}">Doctor Dashboard</a></li>
+                {% elif user.role == 'nurse' %}
+                    <li><a href="{% url 'nurse_dashboard' %}">Nurse Dashboard</a></li>
+                {% elif user.role == 'admin' %}
+                    <li><a href="{% url 'admin_dashboard' %}">Admin Dashboard</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Content Area -->
+    <main>
+        {% block content %}
+        <!-- Content specific to each role will be injected here -->
+        {% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Hospital Management System</p>
+    </footer>
+</body>
+</html>

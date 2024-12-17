@@ -10,7 +10,7 @@ urlpatterns = [
     path('', landing, name='landing'),
 
     # Template-based views
-    path('patients/register/', views.register, name='patient_register'),
+    path('patients/register/', views.register, name='register'),
     path('patients/login/', views.login_view, name='login'),
     path('home/', views.home, name='home'),
     path('profile/', views.profile, name='profile'),

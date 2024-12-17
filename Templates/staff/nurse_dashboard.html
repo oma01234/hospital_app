@@ -1,25 +1,20 @@
-{% extends "staff/base_hospital_app.html" %}
+{% extends 'staff/base.html' %}
+
+{% block title %} Nurse Dashboard {% endblock %}
 
 {% block content %}
-<div class="container my-5">
-    <h1 class="text-center text-success mb-4">Nurse Dashboard</h1>
-    <div class="card border-success mb-3">
-        <div class="card-header bg-success text-white">
-            <h4>Patient Monitoring</h4>
-        </div>
-        <div class="card-body">
-            <p class="card-text">Track patient vitals, administer medications, and assist in treatment plans.</p>
-            <a href="{% url 'patients:vitals' %}" class="btn btn-success">Monitor Patients</a>
-        </div>
-    </div>
-    <div class="card border-success mb-3">
-        <div class="card-header bg-success text-white">
-            <h4>Emergency Alerts</h4>
-        </div>
-        <div class="card-body">
-            <p class="card-text">Respond quickly to emergency service requests from patients.</p>
-            <a href="{% url 'emergency:alerts' %}" class="btn btn-success">View Alerts</a>
-        </div>
-    </div>
-</div>
+    <h1>Welcome, Nurse {{ user.first_name }}</h1>
+    <p>Here are your tasks for today:</p>
+
+    <!-- Display nurse-specific tasks, like lab test management, stock alerts, etc. -->
+    <ul>
+        <li><a href="{% url 'view_lab_tests' patient_id=1 %}">View Lab Tests</a></li>
+        <li><a href="{% url 'patient_messages' %}">Patient Messages</a></li>
+        <li><a href="{% url 'team_collaboration' patient_id=1 %}">Team Collaboration</a></li>
+        <li><a href="{% url 'emergency_alert_list' %}">Emergency Alerts</a></li>
+        <li><a href="{% url 'acknowledge_alert' pk=1 %}">Acknowledge Alert</a></li>
+        <li><a href="{% url 'resolve_alert' pk=1 %}">Resolve Alert</a></li>
+        <li><a href="{% url 'stock_alerts' %}">Stock Alerts</a></li>
+        <li><a href="{% url 'medical_supply_inventory' %}">Medical Supply Inventory</a></li>
+    </ul>
 {% endblock %}

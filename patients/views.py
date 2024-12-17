@@ -1,24 +1,48 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
-from .models import *
 from .forms import *
+from .models import *
 
 def landing(request):
 
     return render(request, 'patients/landing.html')
 
 # Registration View
+
 def register(request):
     if request.method == 'POST':
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
+            # Save User model fields
             user = form.save(commit=False)
             user.set_password(form.cleaned_data['password'])
             user.save()
+
+            # Check if the profile already exists
+            profile, created = Profile.objects.get_or_create(user=user)
+            if not created:
+                # Profile already exists, pass a message
+                print('created already')
+
+                # Redirect to the same page to start the process again (or another page)
+                return redirect('patients:register')
+
+            # Save Profile model fields only if it's a new profile
+            Profile.objects.create(
+                user=user,
+                phone_number=form.cleaned_data.get('phone_number'),
+                emergency_contact=form.cleaned_data.get('emergency_contact'),
+                medical_history=form.cleaned_data.get('medical_history'),
+                allergies=form.cleaned_data.get('allergies'),
+                insurance_details=form.cleaned_data.get('insurance_details'),
+            )
+
             return redirect('patients:login')
     else:
         form = UserRegistrationForm()
+
     return render(request, 'patients/register.html', {'form': form})
+
 
 # Login View
 def login_view(request):

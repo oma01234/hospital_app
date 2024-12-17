@@ -1,25 +1,22 @@
-{% extends "staff/base_hospital_app.html" %}
+{% extends 'staff/base.html' %}
+
+{% block title %} Admin Dashboard {% endblock %}
 
 {% block content %}
-<div class="container my-5">
-    <h1 class="text-center text-danger mb-4">Admin Dashboard</h1>
-    <div class="card border-danger mb-3">
-        <div class="card-header bg-danger text-white">
-            <h4>Manage Staff</h4>
-        </div>
-        <div class="card-body">
-            <p class="card-text">Add, update, or remove staff accounts and roles.</p>
-            <a href="{% url 'staff:manage' %}" class="btn btn-danger">Manage Staff</a>
-        </div>
-    </div>
-    <div class="card border-danger mb-3">
-        <div class="card-header bg-danger text-white">
-            <h4>System Reports</h4>
-        </div>
-        <div class="card-body">
-            <p class="card-text">Review hospital activity reports and metrics.</p>
-            <a href="{% url 'reports:system' %}" class="btn btn-danger">View Reports</a>
-        </div>
-    </div>
-</div>
+    <h1>Welcome, Admin {{ user.first_name }}</h1>
+    <p>Here are your tasks for today:</p>
+
+    <!-- Display admin-specific tasks, like order management, audit logs, etc. -->
+    <ul>
+        <li><a href="{% url 'order_management' %}">Order Management</a></li>
+        <li><a href="{% url 'stock_alerts' %}">Stock Alerts</a></li>
+        <li><a href="{% url 'medical_supply_inventory' %}">Medical Supply Inventory</a></li>
+        <li><a href="{% url 'dashboard_view' %}">Hospital Dashboard</a></li>
+        <li><a href="{% url 'resource_allocation_view' %}">Resource Allocation</a></li>
+        <li><a href="{% url 'report_list' %}">Report List</a></li>
+        <li><a href="{% url 'audit_log_list' %}">Audit Logs</a></li>
+        <li><a href="{% url 'staff_list' %}">Staff List</a></li>
+        <li><a href="{% url 'staff_certifications' staff_id=1 %}">Staff Certifications</a></li>
+        <li><a href="{% url 'notifications' %}">Notifications</a></li>
+    </ul>
 {% endblock %}
