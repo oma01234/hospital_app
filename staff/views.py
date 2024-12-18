@@ -352,10 +352,32 @@ def staff_messages(request):
     return render(request, 'staff/staff_messages.html', {'messages': staff_messages})
 
 
+@login_required
 def send_staff_message(request):
     if request.method == 'POST':
-        # Logic for sending the message
-        pass
+        recipient_id = request.POST.get('recipient_id')  # Assuming recipient's ID is passed in the form
+        message_content = request.POST.get('message_content')  # The message content from the form
+
+        if recipient_id and message_content:
+            try:
+                recipient = Staff.objects.get(id=recipient_id)  # Get recipient from the ID
+                sender = request.user  # The currently logged-in user is the sender
+                
+                # Create and save the message
+                message = StaffMessage(sender=sender, recipient=recipient, message_content=message_content)
+                message.save()
+
+                # Success message
+                messages.success(request, f"Message sent to {recipient.username} successfully.")
+                
+                # Redirect to the inbox or another page (e.g., message list)
+                return redirect('staff_inbox')  # Change 'staff_inbox' to the appropriate URL name
+            except Staff.DoesNotExist:
+                messages.error(request, "Recipient not found.")
+        else:
+            messages.error(request, "Please fill in all fields.")
+
+    # Render the message sending form if GET or unsuccessful POST
     return render(request, 'staff/send_staff_message.html')
 
 
