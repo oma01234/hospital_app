@@ -16,7 +16,7 @@ class StaffPermission(IsAuthenticated):
     def has_permission(self, request, view):
         return request.user.is_staff
 
-
+# adjust the apis to work properly, especially the staff p
 class DoctorPermission(IsDoctor):
     def has_permission(self, request, view):
         # Ensure user is a doctor by checking role
