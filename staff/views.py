@@ -358,6 +358,8 @@ def send_staff_message(request):
         recipient_id = request.POST.get('recipient_id')  # Assuming recipient's ID is passed in the form
         message_content = request.POST.get('message_content')  # The message content from the form
 
+        staff_members = Staff.objects.all()  # or any filtering logic you prefer
+
         if recipient_id and message_content:
             try:
                 recipient = Staff.objects.get(id=recipient_id)  # Get recipient from the ID
@@ -378,7 +380,7 @@ def send_staff_message(request):
             messages.error(request, "Please fill in all fields.")
 
     # Render the message sending form if GET or unsuccessful POST
-    return render(request, 'staff/send_staff_message.html')
+    return render(request, 'staff/send_staff_message.html', {'staff_members': staff_members})
 
 
 def doctor_patient_messages(request, patient_id):
