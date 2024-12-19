@@ -8,17 +8,17 @@
 
     <!-- Display doctor-specific tasks, like patient lists, prescriptions, etc. -->
     <ul>
-        <li><a href="{% url 'order_lab_test' patient_id=1 %}">Order Lab Test</a></li>
-        <li><a href="{% url 'add_lab_result' lab_test_id=1 %}">Add Lab Result</a></li>
-        <li><a href="{% url 'prescribe_medication' patient_id=1 %}">Prescribe Medication</a></li>
-        <li><a href="{% url 'view_prescriptions' patient_id=1 %}">View Prescriptions</a></li>
-        <li><a href="{% url 'doctor_patient_messages' patient_id=1 %}">Patient Messages</a></li>
-        <li><a href="{% url 'health_and_safety_protocols' %}">Health & Safety Protocols</a></li>
-        <li><a href="{% url 'infection_control_practices' %}">Infection Control Practices</a></li>
-        <li><a href="{% url 'staff_certifications' staff_id=1 %}">Staff Certifications</a></li>
-        <li><a href="{% url 'notifications' %}">Notifications</a></li>
-        <li><a href="{% url 'send_staff_message' %}">Send Staff message </a></li>
-        <li><a href="{% url 'doctor_patient_messages' %}">Send Patient Message </a></li>
-        <li><a href="{% url 'team_collaboration' %}">Team Messages</a></li>
+        <li><a href="{% url 'staff:order_lab_test' patient_id=1 %}">Order Lab Test</a></li>
+        <li><a href="{% url 'staff:add_lab_result' lab_test_id=1 %}">Add Lab Result</a></li>
+        <li><a href="{% url 'staff:prescribe_medication' patient_id=1 %}">Prescribe Medication</a></li>
+        <li><a href="{% url 'staff:view_prescriptions' patient_id=1 %}">View Prescriptions</a></li>
+        <li><a href="{% url 'staff:doctor_patient_messages' patient_id=1 %}">Patient Messages</a></li>
+        <li><a href="{% url 'staff:health_and_safety_protocols' %}">Health & Safety Protocols</a></li>
+        <li><a href="{% url 'staff:infection_control_practices' %}">Infection Control Practices</a></li>
+        <li><a href="{% url 'staff:staff_certifications' staff_id=1 %}">Staff Certifications</a></li>
+        <!-- <li><a href="#">Notifications</a></li> sort this guy out -->
+        <li><a href="{% url 'staff:send_staff_message' %}">Send Staff message </a></li>
+        <li><a href="{% url 'staff:doctor_patient_messages' patient_id=1 %}">Send Patient Message </a></li>
+        <li><a href="{% url 'staff:team_collaboration' patient_id=1 %}">Team Messages</a></li>
     </ul>
 {% endblock %}

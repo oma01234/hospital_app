@@ -3,8 +3,9 @@ from django.contrib.auth.models import User
 from django.utils.timezone import now
 from django.conf import settings
 
+# set this guy to populate the list of staff with role = doctor
 class Doctor(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     specialization = models.CharField(max_length=100)
 
     def __str__(self):
@@ -16,7 +17,7 @@ class Appointment(models.Model):
         ('Virtual', 'Virtual'),
     ]
 
-    patient = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='appointment_patient')
+    patient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='appointment_patient')
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
     date = models.DateField()
     time = models.TimeField()

@@ -2,10 +2,13 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from .forms import *
 from .models import *
+from django.contrib.auth.decorators import login_required
+
 
 def landing(request):
 
     return render(request, 'patients/landing.html')
+
 
 # Registration View
 
@@ -54,16 +57,24 @@ def login_view(request):
             user = authenticate(username=username, password=password)
             if user:
                 login(request, user)
-                return redirect('patients:profile')
+                return redirect('patients:home')
     else:
         form = LoginForm()
     return render(request, 'patients/login.html', {'form': form})
 
 
+@login_required
+def logout_view(request):
+    logout(request)
+    return redirect('patients:login')
+
+
+@login_required
 def home(request):
 
     return render(request, 'patients/home.html')
 
+@login_required
 # Profile View
 def profile(request):
     profile = request.user.profile
@@ -76,14 +87,19 @@ def profile(request):
     return render(request, 'patients/profile.html', {'form': form})
 
 
+@login_required
 def medication_reminders(request):
     reminders = MedicationReminder.objects.filter(patient=request.user)
     return render(request, 'appointments/medication_reminders.html', {'reminders': reminders})
 
+
+@login_required
 def bill_list(request):
     bills = Bill.objects.filter(patient=request.user)
     return render(request, 'appointments/bill_list.html', {'bills': bills})
 
+
+@login_required
 def feedback_form(request):
     if request.method == 'POST':
         form = FeedbackForm(request.POST)
@@ -94,12 +110,16 @@ def feedback_form(request):
         form = FeedbackForm()
     return render(request, 'appointments/feedback_form.html', {'form': form})
 
+
 # Treatment Plans View
+@login_required
 def treatment_plans(request):
     plans = TreatmentPlan.objects.filter(patient=request.user)
     return render(request, 'appointments/treatment_plans.html', {'plans': plans})
 
+
 # Emergency Contact View
+@login_required
 def emergency_contact(request):
     emergency_service = EmergencyService.objects.filter(patient=request.user).first()  # Assuming only one service request per patient
     return render(request, 'appointments/emergency_contact.html', {'emergency_service': emergency_service})

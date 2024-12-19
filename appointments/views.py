@@ -44,6 +44,7 @@ def book_virtual_consultation(request):
         form = AppointmentForm()
     return render(request, 'appointments/book_virtual_consultation.html', {'form': form})
 
+
 def add_consultation_note(request, appointment_id):
     appointment = get_object_or_404(Appointment, id=appointment_id)
     if request.method == 'POST':

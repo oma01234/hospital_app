@@ -2,6 +2,8 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.conf import settings
 
+
+# adjust this so it's just the patients that has this model, think of another profile to associate staff with
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     phone_number = models.CharField(max_length=15, blank=True, null=True)
@@ -11,6 +13,9 @@ class Profile(models.Model):
     insurance_details = models.TextField(blank=True, null=True)
     modified_by = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL,
                                     related_name='modified_profiles')
+    next_of_kin = ''
+    next_of_kin_details = 'blah, blah, blah'
+
 
     def __str__(self):
         return f"Profile for {self.user.username}"
@@ -30,7 +35,6 @@ class TreatmentPlan(models.Model):
     patient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='treatment_plans')
     treatment_description = models.TextField()
     start_date = models.DateField()
-    end_date = models.DateField()
     progress_notes = models.TextField(null=True, blank=True)
 
     def __str__(self):

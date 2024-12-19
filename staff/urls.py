@@ -35,7 +35,7 @@ app_name = 'staff'
 urlpatterns = [
     # Register and login URLs
     path('register/', views.register, name='register'),
-    path('login/', views.login_view, name='login'),
+    path('staff/login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
 
     # Dashboard
@@ -122,7 +122,7 @@ urlpatterns = [
     path('infection-control-practices/', views.infection_control_practices, name='infection_control_practices'),
 
     path('staff/', views.staff_list, name='staff-list'),  # URL for listing all staff members
-    path('staff/<int:staff_id>/certifications/', views.staff_certifications, name='staff-certifications'),
+    path('staff/<int:staff_id>/certifications/', views.staff_certifications, name='staff_certifications'),
     # URL for showing certifications for a specific staff member
 
     # API Routes for Doctor, Appointment, etc.

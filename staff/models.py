@@ -54,6 +54,7 @@ class Appointment(models.Model):
         return f"Appointment for {self.patient.username} with Dr. {self.doctor.username}"
 
 
+# remove this form patients dashboard
 class ConsultationNote(models.Model):
     appointment = models.OneToOneField(Appointment, on_delete=models.CASCADE, related_name='note')
     doctor = models.ForeignKey(Staff, on_delete=models.CASCADE, related_name='consultation_notes')

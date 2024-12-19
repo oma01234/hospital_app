@@ -52,6 +52,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'patients.custom_middleware.DynamicLoginURLMiddleware',
+    'staff.custom_middleware.DynamicLoginURLMiddleware'
 ]
 
 ROOT_URLCONF = 'hospital.urls'
