@@ -22,6 +22,10 @@ class Staff(models.Model):
     def __str__(self):
         return f"{self.user.username} ({self.role})"
 
+    @property
+    def is_doctor(self):
+        return self.role == 'doctor'
+
 
 class DoctorSchedule(models.Model):
     def clean(self):
