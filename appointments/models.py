@@ -17,7 +17,7 @@ class Appointment(models.Model):
         ('Virtual', 'Virtual'),
     ]
 
-    patient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='appointment_patient')
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='appointment_patient')
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
     date = models.DateField()
     time = models.TimeField()
