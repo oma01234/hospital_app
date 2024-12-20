@@ -1,6 +1,5 @@
 # models.py
 from django.db import models
-from patients.models import Profile
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
