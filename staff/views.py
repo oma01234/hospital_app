@@ -49,10 +49,30 @@ def login_view(request):
 
 
 def logout_view(request):
-    # Log out the user
-    logout(request)
-    # Redirect to the login page after logging out
-    return redirect('staff:login')
+    alert_message = None
+
+    if request.user.is_authenticated:
+        try:
+            # Get the user's Staff profile
+            staff_profile = Staff.objects.get(user=request.user)
+
+            # Determine the alert message based on the role
+            if staff_profile.role == 'doctor':
+                alert_message = "You are logging out as a doctor."
+            elif staff_profile.role == 'nurse':
+                alert_message = "You are logging out as a nurse."
+            elif staff_profile.role == 'admin':
+                alert_message = "You are logging out as an administrator."
+
+        except Staff.DoesNotExist:
+            # Handle the case where no Staff profile exists for the user
+            alert_message = "No staff profile found for this user."
+
+        # Log out the user
+        logout(request)
+
+    # Redirect to the login page with the alert message
+    return redirect('staff:login') + f"?alert_message={alert_message}"
 
 
 # Example view: Staff dashboard
