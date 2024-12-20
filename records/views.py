@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
-from .models import MedicalRecord, HealthReport, Prescription
-from .forms import MedicalRecordForm, HealthReportForm, PrescriptionForm
+from .models import *
+from .forms import *
 
 # Medical Records
 def medical_records(request):
