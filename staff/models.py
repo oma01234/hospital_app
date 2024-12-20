@@ -4,8 +4,7 @@ from patients.models import Profile
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
-
-
+from patients.models import Patient
 
 
 class Staff(models.Model):
@@ -43,15 +42,24 @@ class DoctorSchedule(models.Model):
 
 
 class Appointment(models.Model):
-    patient = models.ForeignKey(Staff, on_delete=models.CASCADE, related_name='staff_appointment_patient')
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='staff_appointment_patient')
     doctor = models.ForeignKey(Staff, on_delete=models.CASCADE, related_name='appointments_assigned')
     scheduled_time = models.DateTimeField()
-    reason = models.TextField()
+    reason = models.TextField(blank=True, null=True)  # Make reason optional
     status = models.CharField(max_length=20, choices=[('scheduled', 'Scheduled'), ('completed', 'Completed'),
-                                                      ('canceled', 'Canceled')])
+                                                      ('canceled', 'Canceled')], default='scheduled')
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['patient', 'doctor', 'scheduled_time'], name='unique_appointment')
+        ]
+    
     def __str__(self):
-        return f"Appointment for {self.patient.username} with Dr. {self.doctor.username}"
+        return f"Appointment for {self.patient.user.username} with Dr. {self.doctor.user.username}"
+
+    def complete_appointment(self):
+        self.status = 'completed'
+        self.save()
 
 
 # remove this form patients dashboard
