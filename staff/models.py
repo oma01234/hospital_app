@@ -76,7 +76,7 @@ class ConsultationNote(models.Model):
 
 class Assignment(models.Model):
     doctor = models.ForeignKey(Staff, on_delete=models.CASCADE, related_name='doctor_assignments')
-    patient = models.ForeignKey(Staff, on_delete=models.CASCADE, related_name='patient_assignments')
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='patient_assignments')
     assigned_at = models.DateTimeField(auto_now_add=True)
     notes = models.TextField(blank=True, null=True)
 
@@ -85,7 +85,7 @@ class Assignment(models.Model):
 
 
 class VitalSign(models.Model):
-    patient = models.ForeignKey(Staff, on_delete=models.CASCADE, related_name='vitals')
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='vitals')
     recorded_at = models.DateTimeField(auto_now_add=True)
     blood_pressure = models.CharField(max_length=20)
     temperature = models.DecimalField(max_digits=5, decimal_places=2)
@@ -97,7 +97,7 @@ class VitalSign(models.Model):
         return f"Vitals for {self.patient.username} recorded on {self.recorded_at}"
 
 class ProgressTracking(models.Model):
-    patient = models.ForeignKey(Staff, on_delete=models.CASCADE, related_name='progress')
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='progress')
     doctor = models.ForeignKey(Staff, on_delete=models.CASCADE, related_name='progress_reports')
     recorded_at = models.DateTimeField(auto_now_add=True)
     progress_notes = models.TextField()
@@ -116,7 +116,7 @@ class CarePlan(models.Model):
 
 
 class MedicalRecord(models.Model):
-    patient = models.ForeignKey(Staff, on_delete=models.CASCADE, related_name='staff_medical_records')
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='staff_medical_records')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     diagnoses = models.TextField()
@@ -129,7 +129,7 @@ class MedicalRecord(models.Model):
         return f"Medical Record for {self.patient.username}"
 
 class LabTest(models.Model):
-    patient = models.ForeignKey(Staff, on_delete=models.CASCADE, related_name='lab_tests')
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='lab_tests')
     test_name = models.CharField(max_length=255)
     test_date = models.DateTimeField(auto_now_add=True)
     ordered_by = models.ForeignKey(Staff, on_delete=models.CASCADE, related_name='ordered_tests')
@@ -149,7 +149,7 @@ class LabResult(models.Model):
 
 
 class Prescription(models.Model):
-    patient = models.ForeignKey(Staff, on_delete=models.CASCADE, related_name='staff_prescriptions')
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='staff_prescriptions')
     doctor = models.ForeignKey(Staff, on_delete=models.CASCADE, related_name='prescriptions_written')
     medication_name = models.CharField(max_length=255)
     dosage = models.CharField(max_length=255)
@@ -173,7 +173,7 @@ class StaffMessage(models.Model):
 
 class DoctorPatientMessage(models.Model):
     sender = models.ForeignKey(Staff, related_name='sent_patient_messages', on_delete=models.CASCADE)
-    recipient = models.ForeignKey(Profile, related_name='received_messages', on_delete=models.CASCADE)
+    recipient = models.ForeignKey(Patient, related_name='received_messages', on_delete=models.CASCADE)
     message_content = models.TextField()
     sent_at = models.DateTimeField(auto_now_add=True)
 
@@ -212,7 +212,7 @@ class Insurance(models.Model):
 
 
 class Bill(models.Model):
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="bills")
+    profile = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name="bills")
     bill_number = models.CharField(max_length=255, unique=True)
     date_created = models.DateField(auto_now_add=True)
     total_amount = models.DecimalField(max_digits=10, decimal_places=2)
@@ -249,7 +249,7 @@ class EmergencyAlert(models.Model):
         ('other', 'Other'),
     ]
 
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='emergency_alerts')  # Linked to Profile
+    profile = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='emergency_alerts')  # Linked to Profile
     alert_type = models.CharField(max_length=20, choices=ALERT_TYPES)
     message = models.TextField()
     status = models.CharField(max_length=20, default='pending')  # pending, acknowledged, resolved
