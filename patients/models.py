@@ -3,9 +3,18 @@ from django.db import models
 from django.conf import settings
 
 
+class Patient(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    phone_number = models.CharField(max_length=15)
+    profile_picture = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
+    # Add any other fields that are specific to patients, such as medical history, etc.
+
+    def __str__(self):
+        return self.user.username
+
 # adjust this so it's just the patients that has this model, think of another profile to associate staff with
 class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    user = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='profile')
     phone_number = models.CharField(max_length=15, blank=True, null=True)
     emergency_contact = models.CharField(max_length=15, blank=True, null=True)
     medical_history = models.TextField(blank=True, null=True)
@@ -13,8 +22,13 @@ class Profile(models.Model):
     insurance_details = models.TextField(blank=True, null=True)
     modified_by = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL,
                                     related_name='modified_profiles')
-    next_of_kin = ''
-    next_of_kin_details = 'blah, blah, blah'
+    
+    next_of_kin_name = models.CharField(max_length=100, blank=True, null=True)
+    next_of_kin_relationship = models.CharField(max_length=50, blank=True, null=True)
+    next_of_kin_phone_number = models.CharField(max_length=15, blank=True, null=True)
+    next_of_kin_email = models.EmailField(blank=True, null=True)
+    next_of_kin_address = models.TextField(blank=True, null=True)
+    next_of_kin_relationship = models.CharField(max_length=50, choices=RELATIONSHIP_CHOICES, blank=True, null=True)
 
 
     def __str__(self):
