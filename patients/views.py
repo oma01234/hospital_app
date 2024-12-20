@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from .forms import *
 from .models import *
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ObjectDoesNotExist
 
 
 def landing(request):
@@ -63,10 +64,19 @@ def login_view(request):
     return render(request, 'patients/login.html', {'form': form})
 
 
-@login_required
 def logout_view(request):
-    logout(request)
-    return redirect('patients:login')
+    # Check if the logged-in user has a Profile (i.e., is a patient)
+    try:
+        # Attempt to access the Profile using the related_name 'profile'
+        profile = request.user.profile  # This will raise an exception if no Profile exists
+
+        # If the user has a Profile, they are a patient
+        logout(request)
+        return redirect('patients:login')
+
+    except ObjectDoesNotExist:
+        # If no Profile exists for the user, they are not a patient
+        logout(request)
 
 
 @login_required
