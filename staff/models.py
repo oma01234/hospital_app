@@ -186,7 +186,7 @@ class DoctorPatientMessage(models.Model):
 
 class TeamMessage(models.Model):
     sender = models.ForeignKey(Staff, related_name='sent_team_messages', on_delete=models.CASCADE)
-    recipient = models.ForeignKey(Profile, related_name='team_received_messages', on_delete=models.CASCADE)
+    recipient = models.ForeignKey(Patient, related_name='team_received_messages', on_delete=models.CASCADE)
     message_content = models.TextField()
     sent_at = models.DateTimeField(auto_now_add=True)
 
@@ -203,7 +203,7 @@ class InsuranceProvider(models.Model):
         return self.name
 
 class Insurance(models.Model):
-    profile = models.OneToOneField(Profile, on_delete=models.CASCADE, related_name="insurance")
+    profile = models.OneToOneField(Patient, on_delete=models.CASCADE, related_name="insurance")
     insurance_provider = models.CharField(max_length=255)
     policy_number = models.CharField(max_length=255)
     coverage_start_date = models.DateField()
@@ -231,7 +231,7 @@ class Bill(models.Model):
 
 class InsuranceClaim(models.Model):
     bill = models.ForeignKey(Bill, on_delete=models.CASCADE, related_name="insurance_claims")
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="insurance_claims")
+    profile = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name="insurance_claims")
     claim_number = models.CharField(max_length=255, unique=True)
     claim_date = models.DateField(auto_now_add=True)
     claim_status = models.CharField(max_length=50, choices=[('submitted', 'Submitted'), ('approved', 'Approved'), ('denied', 'Denied')])
@@ -252,7 +252,7 @@ class EmergencyAlert(models.Model):
         ('other', 'Other'),
     ]
 
-    profile = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='emergency_alerts')  # Linked to Profile
+    profile = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='emergency_alerts')  # Linked to Patient
     alert_type = models.CharField(max_length=20, choices=ALERT_TYPES)
     message = models.TextField()
     status = models.CharField(max_length=20, default='pending')  # pending, acknowledged, resolved
