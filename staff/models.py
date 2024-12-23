@@ -87,6 +87,11 @@ class Assignment(models.Model):
         # Validate that the staff member being assigned is a doctor
         if self.doctor.role != 'doctor':
             raise ValidationError("Only doctors can be assigned to patients.")
+        
+        # Check if the doctor already has 5 patients assigned
+        current_patient_count = Assignment.objects.filter(doctor=self.doctor).distinct('patient').count()
+        if current_patient_count >= 5:
+            raise ValidationError(f"Dr. {self.doctor.user.username} is already assigned to 5 patients.")
 
     def save(self, *args, **kwargs):
         # Ensure validation is run before saving
