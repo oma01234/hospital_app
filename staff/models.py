@@ -83,8 +83,18 @@ class Assignment(models.Model):
     assigned_at = models.DateTimeField(auto_now_add=True)
     notes = models.TextField(blank=True, null=True)
 
+    def clean(self):
+        # Validate that the staff member being assigned is a doctor
+        if self.doctor.role != 'doctor':
+            raise ValidationError("Only doctors can be assigned to patients.")
+
+    def save(self, *args, **kwargs):
+        # Ensure validation is run before saving
+        self.full_clean()
+        super().save(*args, **kwargs)
+
     def __str__(self):
-        return f"Assignment of {self.patient.username} to Dr. {self.doctor.username}"
+        return f"Assignment of {self.patient.user.username} to Dr. {self.doctor.user.username}"
 
 
 class VitalSign(models.Model):
