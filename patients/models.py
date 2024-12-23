@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.conf import settings
-
+from staff.models import Staff
 
 class Patient(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -20,7 +20,7 @@ class Profile(models.Model):
     medical_history = models.TextField(blank=True, null=True)
     allergies = models.TextField(blank=True, null=True)
     insurance_details = models.TextField(blank=True, null=True)
-    modified_by = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL,
+    modified_by = models.ForeignKey(Staff, null=True, blank=True, on_delete=models.SET_NULL,
                                     related_name='modified_profiles')
     
     next_of_kin_name = models.CharField(max_length=100, blank=True, null=True)
@@ -35,7 +35,7 @@ class Profile(models.Model):
         return f"Profile for {self.user.username}"
 
 class MedicationReminder(models.Model):
-    patient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='medication_reminders')
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='medication_reminders')
     medication_name = models.CharField(max_length=100)
     dosage = models.CharField(max_length=50)
     time = models.TimeField()
@@ -46,7 +46,7 @@ class MedicationReminder(models.Model):
         return f"{self.medication_name} for {self.patient.username} at {self.time}"
 
 class TreatmentPlan(models.Model):
-    patient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='treatment_plans')
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='treatment_plans')
     treatment_description = models.TextField()
     start_date = models.DateField()
     progress_notes = models.TextField(null=True, blank=True)
@@ -55,7 +55,7 @@ class TreatmentPlan(models.Model):
         return f"Treatment Plan for {self.patient.username}"
 
 class Bill(models.Model):
-    patient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='bills')
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='bills')
     total_amount = models.DecimalField(max_digits=10, decimal_places=2)
     paid_amount = models.DecimalField(max_digits=10, decimal_places=2)
     due_date = models.DateField()
@@ -65,7 +65,7 @@ class Bill(models.Model):
         return f"Bill for {self.patient.username} - {self.total_amount}"
 
 class Feedback(models.Model):
-    patient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='feedback')
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='feedback')
     rating = models.PositiveIntegerField(default=0)
     comments = models.TextField()
 
@@ -74,7 +74,7 @@ class Feedback(models.Model):
 
 
 class EmergencyService(models.Model):
-    patient = models.ForeignKey(User, on_delete=models.CASCADE)
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
     location = models.CharField(max_length=255)  # Location or coordinates
     emergency_type = models.CharField(max_length=100)  # E.g., "Heart Attack", "Accident"
     request_time = models.DateTimeField(auto_now_add=True)
