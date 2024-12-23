@@ -2,14 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils.timezone import now
 from django.conf import settings
-
-# set this guy to populate the list of staff with role = doctor
-class Doctor(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    specialization = models.CharField(max_length=100)
-
-    def __str__(self):
-        return f"Dr. {self.user.first_name} {self.user.last_name} - {self.specialization}"
+from staff.models import Staff
 
 class Appointment(models.Model):
     CONSULTATION_TYPE_CHOICES = [
@@ -18,7 +11,7 @@ class Appointment(models.Model):
     ]
 
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='appointment_patient')
-    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
+    doctor = models.ForeignKey(Staff, on_delete=models.CASCADE)
     date = models.DateField()
     time = models.TimeField()
     reason = models.TextField()
