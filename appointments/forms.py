@@ -5,20 +5,17 @@ class AppointmentForm(forms.ModelForm):
     class Meta:
         model = Appointment
         fields = ['doctor', 'date', 'time', 'reason']
-    
+
     def __init__(self, *args, **kwargs):
-        # Ensure you have access to the patient when creating the form
-        self.patient = kwargs.get('patient', None)
+        self.patient = kwargs.pop('patient', None)  # Get the patient from kwargs
         super().__init__(*args, **kwargs)
 
-        # Filter the doctor queryset to only show doctors
-        self.fields['doctor'].queryset = Staff.objects.filter(role='doctor')
-
-        # Optionally, if you want to filter doctors based on the patient's assigned doctor(s)
+        # Filter the doctor queryset to show only assigned doctors for the patient
         if self.patient:
-            # You can filter doctors based on a specific patient’s prior assignments (optional)
-            # For example: show doctors that the patient has been assigned to before
-            self.fields['doctor'].queryset = self.fields['doctor'].queryset.filter(assignments__patient=self.patient)
+            self.fields['doctor'].queryset = Staff.objects.filter(
+                role='doctor',
+                doctor_assignments__patient=self.patient
+            ).distinct()
 
 
 class ConsultationNoteForm(forms.ModelForm):
