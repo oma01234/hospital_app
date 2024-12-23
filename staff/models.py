@@ -109,7 +109,7 @@ class ProgressTracking(models.Model):
         return f"Progress for {self.patient.username} by Dr. {self.doctor.username}"
 
 class CarePlan(models.Model):
-    patient = models.ForeignKey(Staff, on_delete=models.CASCADE, related_name='care_plans')
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='care_plans')
     doctor = models.ForeignKey(Staff, on_delete=models.CASCADE, related_name='care_plans_created')
     plan_description = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
@@ -186,7 +186,7 @@ class DoctorPatientMessage(models.Model):
 
 class TeamMessage(models.Model):
     sender = models.ForeignKey(Staff, related_name='sent_team_messages', on_delete=models.CASCADE)
-    recipient = models.ForeignKey(Patient, related_name='team_received_messages', on_delete=models.CASCADE)
+    recipient = models.ForeignKey(Staff, related_name='team_received_messages', on_delete=models.CASCADE)
     message_content = models.TextField()
     sent_at = models.DateTimeField(auto_now_add=True)
 
