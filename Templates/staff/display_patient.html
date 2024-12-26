@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'staff/base.html' %}
 
 {% block title %}Patient Details{% endblock %}
 
@@ -14,7 +14,7 @@
         <p>No vitals recorded</p>
     {% endfor %}
 </ul>
-<a href="{% url 'add_vitals' patient.id %}">Add Vitals</a>
+<a href="{% url 'staff:add_vitals' patient.id %}">Add Vitals</a>
 
 <h3>Progress Tracking</h3>
 <ul>
@@ -24,7 +24,7 @@
         <p>No progress reports</p>
     {% endfor %}
 </ul>
-<a href="{% url 'add_progress_tracking' patient.id %}">Add Progress Tracking</a>
+<a href="{% url 'staff:add_progress_tracking' patient.id %}">Add Progress Tracking</a>
 
 <h3>Care Plans</h3>
 <ul>
@@ -34,7 +34,7 @@
         <p>No care plans</p>
     {% endfor %}
 </ul>
-<a href="{% url 'add_care_plan' patient.id %}">Add Care Plan</a>
+<a href="{% url 'staff:add_care_plan' patient.id %}">Add Care Plan</a>
 
 <h3>Medical Records</h3>
 <ul>
@@ -44,7 +44,7 @@
         <p>No medical records</p>
     {% endfor %}
 </ul>
-<a href="{% url 'add_medical_record' patient.id %}">Add Medical Record</a>
+<a href="{% url 'staff:add_medical_record' patient.id %}">Add Medical Record</a>
 
 <h3>Lab Tests</h3>
 <ul>
@@ -54,7 +54,7 @@
         <p>No lab tests</p>
     {% endfor %}
 </ul>
-<a href="{% url 'order_lab_test' patient.id %}">Order Lab Test</a>
+<a href="{% url 'staff:order_lab_test' patient.id %}">Order Lab Test</a>
 
 <h3>Prescriptions</h3>
 <ul>
@@ -64,6 +64,6 @@
         <p>No prescriptions</p>
     {% endfor %}
 </ul>
-<a href="{% url 'prescribe_medication' patient.id %}">Prescribe Medication</a>
+<a href="{% url 'staff:prescribe_medication' patient.id %}">Prescribe Medication</a>
 
 {% endblock %}

@@ -1,5 +1,5 @@
 <!-- view_medical_record.html -->
-<h1>Medical Record for {{ medical_records.0.patient.username }}</h1>
+<h1>Medical Record for {{ patient.user.username }}</h1>
 {% for record in medical_records %}
     <p><strong>Diagnoses:</strong> {{ record.diagnoses }}</p>
     <p><strong>Treatment History:</strong> {{ record.treatment_history }}</p>

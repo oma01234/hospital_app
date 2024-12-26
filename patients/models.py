@@ -21,7 +21,7 @@ class Patient(models.Model):
 
 
 class Profile(models.Model):
-    user = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='profile')
+    user = models.OneToOneField(Patient, on_delete=models.CASCADE, related_name='profile')
     phone_number = models.CharField(max_length=15, blank=True, null=True)
     emergency_contact = models.CharField(max_length=15, blank=True, null=True)
     medical_history = models.TextField(blank=True, null=True)
@@ -37,7 +37,7 @@ class Profile(models.Model):
     next_of_kin_relationship = models.CharField(max_length=50, choices=RELATIONSHIP_CHOICES, blank=True, null=True)
 
     def __str__(self):
-        return f"Profile for {self.user.username}"
+        return f"Profile for {self.user.user.username}"
 
 
 class MedicationReminder(models.Model):

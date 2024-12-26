@@ -1,7 +1,4 @@
 from django.db import models
-from django.contrib.auth.models import User
-from django.utils.timezone import now
-from django.conf import settings
 from patients.models import Patient
 from staff.models import Staff
 
@@ -23,6 +20,7 @@ class Appointment(models.Model):
 
     def __str__(self):
         return f"{self.patient.username} with {self.doctor.user.username} on {self.date} at {self.time}"
+
 
 class ConsultationNote(models.Model):
     appointment = models.OneToOneField(Appointment, on_delete=models.CASCADE, related_name='consultation_note')

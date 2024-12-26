@@ -22,18 +22,17 @@ def register(request):
             user.set_password(form.cleaned_data['password'])
             user.save()
 
-            # Check if the profile already exists
-            profile, created = Profile.objects.get_or_create(user=user)
-            if not created:
-                # Profile already exists, pass a message
-                print('created already')
+            # Create the Patient instance linked to the User
+            patient, created = Patient.objects.get_or_create(user=user)
 
-                # Redirect to the same page to start the process again (or another page)
+            if not created:
+                # Patient instance already exists
+                print('Patient already exists')
                 return redirect('patients:register')
 
-            # Save Profile model fields only if it's a new profile
+            # Save Profile model fields
             Profile.objects.create(
-                user=user,
+                user=patient,
                 phone_number=form.cleaned_data.get('phone_number'),
                 emergency_contact=form.cleaned_data.get('emergency_contact'),
                 medical_history=form.cleaned_data.get('medical_history'),
@@ -58,6 +57,7 @@ def login_view(request):
             user = authenticate(username=username, password=password)
             if user:
                 login(request, user)
+                print('logged in')
                 return redirect('patients:home')
     else:
         form = LoginForm()
@@ -89,9 +89,9 @@ def home(request):
 # Profile View
 def profile(request):
 
-    view_profile = get_object_or_404(Profile, user=request.user)
+    view_profile = get_object_or_404(Profile, user=request.user.Patient)
 
-    return render(request, 'profile/profile.html', {'profile': view_profile})
+    return render(request, 'patients/profile.html', {'profile': view_profile})
 
 
 @login_required

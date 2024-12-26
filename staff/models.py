@@ -143,7 +143,7 @@ class MedicalRecord(models.Model):
     medications = models.TextField()
 
     def __str__(self):
-        return f"Medical Record for {self.patient.username}"
+        return f"Medical Record for {self.patient.user.username}"
 
 class LabTest(models.Model):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='lab_tests')

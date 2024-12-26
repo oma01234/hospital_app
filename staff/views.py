@@ -324,14 +324,17 @@ def add_medical_record(request, patient_id):
             family_history=family_history,
             medications=medications
         )
-        return redirect('view_medical_record', patient_id=patient.id)
+        return redirect('staff:view_medical_record', patient_id=patient.id)
     return render(request, 'staff/add_medical_record.html', {'patient': patient})
 
 
 @login_required
 def view_medical_record(request, patient_id):
     medical_records = MedicalRecord.objects.filter(patient_id=patient_id)
-    return render(request, 'staff/view_medical_record.html', {'medical_records': medical_records})
+    patient = Patient.objects.get(id=patient_id)
+    print(patient.user.username)
+    return render(request, 'staff/view_medical_record.html', {'medical_records': medical_records,
+                                                              'patient': patient})
 
 
 @login_required
