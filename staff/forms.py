@@ -17,12 +17,6 @@ class InsuranceClaimForm(forms.ModelForm):
         fields = ['claim_number', 'status']
 
 
-class ProfileUpdateForm(forms.ModelForm):
-    class Meta:
-        model = Profile
-        fields = ['phone_number', 'emergency_contact', 'medical_history', 'allergies', 'insurance_details']
-
-
 
 class StaffUserCreationForm(forms.ModelForm):
     username = forms.CharField(

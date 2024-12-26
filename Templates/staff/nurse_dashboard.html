@@ -8,15 +8,15 @@
 
     <!-- Display nurse-specific tasks, like lab test management, stock alerts, etc. -->
     <ul>
-        <li><a href="{% url 'view_lab_tests' patient_id=1 %}">View Lab Tests</a></li>
-        <li><a href="{% url 'patient_messages' %}">Patient Messages</a></li>
-        <li><a href="{% url 'team_collaboration' patient_id=1 %}">Team Collaboration</a></li>
-        <li><a href="{% url 'emergency_alert_list' %}">Emergency Alerts</a></li>
-        <li><a href="{% url 'acknowledge_alert' pk=1 %}">Acknowledge Alert</a></li>
-        <li><a href="{% url 'resolve_alert' pk=1 %}">Resolve Alert</a></li>
-        <li><a href="{% url 'stock_alerts' %}">Stock Alerts</a></li>
-        <li><a href="{% url 'medical_supply_inventory' %}">Medical Supply Inventory</a></li>
-        <li><a href="{% url 'staff_messages' %}">Staff messages</a></li>
-        <li><a href="{% url 'team_collaboration' %}">Team</a></li>
+        <li><a href="{% url 'staff:view_lab_tests' patient_id=1 %}">View Lab Tests</a></li>
+        <li><a href="{% url 'staff:patient_messages' %}">Patient Messages</a></li>
+        <li><a href="{% url 'staff:team_collaboration' patient_id=1 %}">Team Collaboration</a></li>
+        <li><a href="{% url 'staff:emergency_alert_list' %}">Emergency Alerts</a></li>
+        <li><a href="{% url 'staff:acknowledge_alert' pk=1 %}">Acknowledge Alert</a></li>
+        <li><a href="{% url 'staff:resolve_alert' pk=1 %}">Resolve Alert</a></li>
+        <li><a href="{% url 'staff:stock_alerts' %}">Stock Alerts</a></li>
+        <li><a href="{% url 'staff:medical_supply_inventory' %}">Medical Supply Inventory</a></li>
+        <li><a href="{% url 'staff:staff_messages' %}">Staff messages</a></li>
+        <li><a href="{% url 'staff:team_collaboration' %}">Team</a></li>
     </ul>
 {% endblock %}

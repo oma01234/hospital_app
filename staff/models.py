@@ -5,7 +5,6 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from patients.models import Patient
 
-
 class Staff(models.Model):
     ROLE_CHOICES = (
         ('doctor', 'Doctor'),

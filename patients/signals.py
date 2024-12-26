@@ -6,8 +6,13 @@ from .models import Profile
 @receiver(post_save, sender=User)
 def create_profile(sender, instance, created, **kwargs):
     if created:
-        Profile.objects.create(user=instance)
+        # Check if the User has a related Patient instance
+        if hasattr(instance, 'Patient'):
+            Profile.objects.create(user=instance)
+
 
 @receiver(post_save, sender=User)
 def save_profile(sender, instance, **kwargs):
-    instance.profile.save()
+    # Save profile only if the user has a related Patient instance
+    if hasattr(instance, 'Patient'):
+        instance.profile.save()

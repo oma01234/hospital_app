@@ -1,0 +1,57 @@
+{% extends "patients/base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Update Profile</h2>
+    <form method="post" class="form-group">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <div class="row">
+            <div class="col-md-6">
+                <label for="id_phone_number">Phone Number</label>
+                {{ form.phone_number }}
+            </div>
+            <div class="col-md-6">
+                <label for="id_emergency_contact">Emergency Contact</label>
+                {{ form.emergency_contact }}
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="id_medical_history">Medical History</label>
+            {{ form.medical_history }}
+        </div>
+        <div class="form-group">
+            <label for="id_allergies">Allergies</label>
+            {{ form.allergies }}
+        </div>
+        <div class="form-group">
+            <label for="id_insurance_details">Insurance Details</label>
+            {{ form.insurance_details }}
+        </div>
+        <h3>Next of Kin Information</h3>
+        <div class="row">
+            <div class="col-md-6">
+                <label for="id_next_of_kin_name">Name</label>
+                {{ form.next_of_kin_name }}
+            </div>
+            <div class="col-md-6">
+                <label for="id_next_of_kin_phone_number">Phone Number</label>
+                {{ form.next_of_kin_phone_number }}
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="id_next_of_kin_email">Email</label>
+            {{ form.next_of_kin_email }}
+        </div>
+        <div class="form-group">
+            <label for="id_next_of_kin_address">Address</label>
+            {{ form.next_of_kin_address }}
+        </div>
+        <div class="form-group">
+            <label for="id_next_of_kin_relationship">Relationship</label>
+            {{ form.next_of_kin_relationship }}
+        </div>
+        <button type="submit" class="btn btn-primary mt-3">Save Changes</button>
+    </form>
+</div>
+{% endblock %}

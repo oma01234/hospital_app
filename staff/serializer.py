@@ -1,11 +1,13 @@
 # serializers.py
 from rest_framework import serializers
 from .models import *
+from patients.models import Patient
 
 class StaffSerializer(serializers.ModelSerializer):
     class Meta:
         model = Staff
         fields = ['id', 'username', 'role', 'specialty', 'phone_number', 'profile_picture']
+
 
 class DoctorScheduleSerializer(serializers.ModelSerializer):
     class Meta:
@@ -16,6 +18,7 @@ class DoctorScheduleSerializer(serializers.ModelSerializer):
             'thursday_start', 'thursday_end', 'friday_start', 'friday_end',
             'saturday_start', 'saturday_end', 'sunday_start', 'sunday_end'
         ]
+
 
 class AppointmentSerializer(serializers.ModelSerializer):
     class Meta:
@@ -173,3 +176,9 @@ class NotificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notification
         fields = ['id', 'message', 'recipient', 'created_at', 'read', 'notification_type', 'is_urgent']
+
+
+class PatientSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Patient
+        fields = '__all__'  # Or specify the fields you need

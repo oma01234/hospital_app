@@ -2,7 +2,10 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils.timezone import now
 from django.conf import settings
+from patients.models import Patient
 from staff.models import Staff
+
+# set this guy to populate the list of staff with role = docto
 
 class Appointment(models.Model):
     CONSULTATION_TYPE_CHOICES = [

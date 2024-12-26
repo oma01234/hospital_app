@@ -3,11 +3,68 @@
 {% block title %}Profile{% endblock %}
 
 {% block content %}
+{% extends 'patients/base.html' %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
 <h2>Your Profile</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Update Profile</button>
-</form>
+
+<!-- Display profile details -->
+<table>
+    <tr>
+        <th>Name:</th>
+        <td>{{ profile.user.username }}</td>
+    </tr>
+    <tr>
+        <th>Phone Number:</th>
+        <td>{{ profile.phone_number }}</td>
+    </tr>
+    <tr>
+        <th>Emergency Contact:</th>
+        <td>{{ profile.emergency_contact }}</td>
+    </tr>
+    <tr>
+        <th>Medical History:</th>
+        <td>{{ profile.medical_history }}</td>
+    </tr>
+    <tr>
+        <th>Allergies:</th>
+        <td>{{ profile.allergies }}</td>
+    </tr>
+    <tr>
+        <th>Insurance Details:</th>
+        <td>{{ profile.insurance_details }}</td>
+    </tr>
+    <tr>
+        <th>Next of Kin Name:</th>
+        <td>{{ profile.next_of_kin_name }}</td>
+    </tr>
+    <tr>
+        <th>Next of Kin Phone Number:</th>
+        <td>{{ profile.next_of_kin_phone_number }}</td>
+    </tr>
+    <tr>
+        <th>Next of Kin Email:</th>
+        <td>{{ profile.next_of_kin_email }}</td>
+    </tr>
+    <tr>
+        <th>Next of Kin Address:</th>
+        <td>{{ profile.next_of_kin_address }}</td>
+    </tr>
+    <tr>
+        <th>Next of Kin Relationship:</th>
+        <td>{{ profile.next_of_kin_relationship }}</td>
+    </tr>
+</table>
+
+<br>
+
+<!-- Update profile button -->
+<a href="{% url 'patients:update_profile' %}" class="btn btn-primary">Update Profile</a>
+
 <br><br><br>
+{% endblock %}
+
+
 {% endblock %}

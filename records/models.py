@@ -1,5 +1,4 @@
 from django.db import models
-from django.contrib.auth.models import User
 from django.conf import settings
 from patients.models import Patient
 
@@ -13,6 +12,7 @@ class MedicalRecord(models.Model):
     def __str__(self):
         return f"Medical Record for {self.patient.username} on {self.date_recorded}"
 
+
 class HealthReport(models.Model):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='health_reports')
     report_name = models.CharField(max_length=100)
@@ -21,6 +21,7 @@ class HealthReport(models.Model):
 
     def __str__(self):
         return self.report_name
+
 
 class Prescription(models.Model):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='records_prescriptions')

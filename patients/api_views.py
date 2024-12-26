@@ -5,6 +5,8 @@ from .models import *
 from .serializers import *
 from rest_framework import viewsets, permissions
 from rest_framework.permissions import IsAuthenticated
+from django.shortcuts import get_object_or_404
+
 
 class RegisterView(APIView):
     def post(self, request):
@@ -14,23 +16,29 @@ class RegisterView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 class ProfileView(APIView):
     def get(self, request):
-        profile = request.user.profile
+        """
+        Retrieve the profile of the currently authenticated user.
+        """
+        profile = get_object_or_404(Profile, user=request.user)
         serializer = ProfileSerializer(profile)
         return Response(serializer.data)
 
+
+class UpdateProfileView(APIView):
     def put(self, request):
-        profile = request.user.profile
-        data = request.data
-        profile.phone_number = data.get('phone_number', profile.phone_number)
-        profile.emergency_contact = data.get('emergency_contact', profile.emergency_contact)
-        profile.medical_history = data.get('medical_history', profile.medical_history)
-        profile.allergies = data.get('allergies', profile.allergies)
-        profile.insurance_details = data.get('insurance_details', profile.insurance_details)
-        profile.save()
-        serializer = ProfileSerializer(profile)
-        return Response(serializer.data)
+        """
+        Update the profile of the currently authenticated user.
+        """
+        profile = get_object_or_404(Profile, user=request.user)
+        serializer = ProfileSerializer(profile, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=200)
+        return Response(serializer.errors, status=400)
 
 
 class MedicationReminderViewSet(viewsets.ModelViewSet):
@@ -41,6 +49,7 @@ class MedicationReminderViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(patient=self.request.user)
 
+
 class TreatmentPlanViewSet(viewsets.ModelViewSet):
     queryset = TreatmentPlan.objects.all()
     serializer_class = TreatmentPlanSerializer
@@ -49,13 +58,13 @@ class TreatmentPlanViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(patient=self.request.user)
 
-class BillViewSet(viewsets.ModelViewSet):
-    queryset = Bill.objects.all()
-    serializer_class = BillSerializer
-    permission_classes = [IsAuthenticated]
-
-    def perform_create(self, serializer):
-        serializer.save(patient=self.request.user)
+# class BillViewSet(viewsets.ModelViewSet):
+#     queryset = Bill.objects.all()
+#     serializer_class = BillSerializer
+#     permission_classes = [IsAuthenticated]
+#
+#     def perform_create(self, serializer):
+#         serializer.save(patient=self.request.user)
 
 class FeedbackViewSet(viewsets.ModelViewSet):
     queryset = Feedback.objects.all()
@@ -64,6 +73,7 @@ class FeedbackViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(patient=self.request.user)
+
 
 class EmergencyServiceViewSet(viewsets.ModelViewSet):
     queryset = EmergencyService.objects.all()

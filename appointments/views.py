@@ -23,6 +23,7 @@ def appointment_list(request):
     appointments = Appointment.objects.filter(patient=request.user)
     return render(request, 'appointments/appointment_list.html', {'appointments': appointments})
 
+
 @login_required
 def consultation_history(request):
     past_appointments = Appointment.objects.filter(patient=request.user, date__lt=now().date())
@@ -33,6 +34,7 @@ def consultation_history(request):
     })
 
 
+@login_required
 def book_virtual_consultation(request):
     if request.method == 'POST':
         form = AppointmentForm(request.POST)
@@ -47,6 +49,7 @@ def book_virtual_consultation(request):
     return render(request, 'appointments/book_virtual_consultation.html', {'form': form})
 
 
+@login_required
 def add_consultation_note(request, appointment_id):
     appointment = get_object_or_404(Appointment, id=appointment_id)
     if request.method == 'POST':

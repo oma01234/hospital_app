@@ -29,6 +29,7 @@ router.register(r'health-and-safety-protocols', HealthAndSafetyProtocolViewSet, 
 router.register(r'infection-control-practices', InfectionControlPracticeViewSet, basename='infection-control-practice')
 router.register(r'certifications', CertificationViewSet, basename='certification')
 router.register(r'notifications', NotificationViewSet, basename='notification')
+router.register(r'patients', PatientViewSet, basename='patient')
 
 app_name = 'staff'
 
@@ -40,6 +41,9 @@ urlpatterns = [
 
     # Dashboard
     path('dashboard/', views.staff_dashboard, name='dashboard'),
+
+    path('search/', views.search_patient, name='search_patient'),
+    path('patient/<int:patient_id>/', views.display_patient, name='display_patient'),
 
     # Doctor-specific views
     path('doctor/', views.doctor_view, name='doctor_view'),
@@ -108,6 +112,7 @@ urlpatterns = [
     path('orders/', views.order_management, name='order_management'),
 
     path('dashboard/', dashboard_view, name='dashboard'),
+
     path('resource-allocation/', resource_allocation_view, name='resource_allocation'),
 
     path('reports/', report_list, name='report_list'),
@@ -116,7 +121,6 @@ urlpatterns = [
 
     path('audit-logs/', audit_log_list, name='audit_log_list'),
     path('audit-logs/<int:log_id>/', audit_log_detail, name='audit_log_detail'),
-    path('profile/update/', views.update_profile, name='update_profile'),
 
     path('health-and-safety-protocols/', views.health_and_safety_protocols, name='health_and_safety_protocols'),
     path('infection-control-practices/', views.infection_control_practices, name='infection_control_practices'),

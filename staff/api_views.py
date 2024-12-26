@@ -9,6 +9,9 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
 from .utils import generate_report_pdf
+from rest_framework.decorators import action
+from rest_framework.exceptions import NotFound
+from patients.models import Patient
 
 
 # Define the permission classes
@@ -248,3 +251,31 @@ class NotificationViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return Notification.objects.filter(recipient=self.request.user)  # Get notifications for the logged-in user
+
+
+# ViewSet for handling patients
+class PatientViewSet(viewsets.ViewSet):
+
+    # Search patients by username or email
+    @action(detail=False, methods=['get'])
+    def search_patient(self, request):
+        query = request.query_params.get('q', '')
+        if query:
+            patients = Patient.objects.filter(user__username__icontains=query) | Patient.objects.filter(
+                user__email__icontains=query)
+        else:
+            patients = Patient.objects.all()
+
+        serializer = PatientSerializer(patients, many=True)
+        return Response(serializer.data)
+
+    # Display details of a specific patient
+    @action(detail=True, methods=['get'])
+    def display_patient(self, request, pk=None):
+        try:
+            patient = Patient.objects.get(id=pk)
+        except Patient.DoesNotExist:
+            raise NotFound("Patient not found")
+
+        serializer = PatientSerializer(patient)
+        return Response(serializer.data)

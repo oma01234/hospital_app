@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block title %}Patient Details{% endblock %}
+
+{% block content %}
+<h2>Patient: {{ patient.user.username }}</h2>
+<p>Email: {{ patient.user.email }}</p>
+
+<h3>Vitals</h3>
+<ul>
+    {% for vital in vitals %}
+        <li>{{ vital.blood_pressure }} | {{ vital.temperature }} | {{ vital.pulse }}</li>
+    {% empty %}
+        <p>No vitals recorded</p>
+    {% endfor %}
+</ul>
+<a href="{% url 'add_vitals' patient.id %}">Add Vitals</a>
+
+<h3>Progress Tracking</h3>
+<ul>
+    {% for report in progress_reports %}
+        <li>{{ report.progress_notes }}</li>
+    {% empty %}
+        <p>No progress reports</p>
+    {% endfor %}
+</ul>
+<a href="{% url 'add_progress_tracking' patient.id %}">Add Progress Tracking</a>
+
+<h3>Care Plans</h3>
+<ul>
+    {% for plan in care_plans %}
+        <li>{{ plan.plan_description }}</li>
+    {% empty %}
+        <p>No care plans</p>
+    {% endfor %}
+</ul>
+<a href="{% url 'add_care_plan' patient.id %}">Add Care Plan</a>
+
+<h3>Medical Records</h3>
+<ul>
+    {% for record in medical_records %}
+        <li>{{ record.diagnoses }}</li>
+    {% empty %}
+        <p>No medical records</p>
+    {% endfor %}
+</ul>
+<a href="{% url 'add_medical_record' patient.id %}">Add Medical Record</a>
+
+<h3>Lab Tests</h3>
+<ul>
+    {% for test in lab_tests %}
+        <li>{{ test.test_name }} | {{ test.status }}</li>
+    {% empty %}
+        <p>No lab tests</p>
+    {% endfor %}
+</ul>
+<a href="{% url 'order_lab_test' patient.id %}">Order Lab Test</a>
+
+<h3>Prescriptions</h3>
+<ul>
+    {% for prescription in prescriptions %}
+        <li>{{ prescription.medication_name }} | {{ prescription.dosage }}</li>
+    {% empty %}
+        <p>No prescriptions</p>
+    {% endfor %}
+</ul>
+<a href="{% url 'prescribe_medication' patient.id %}">Prescribe Medication</a>
+
+{% endblock %}

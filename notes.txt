@@ -117,6 +117,3 @@ Integrations
 Wearable Devices Integration: Integration with fitness trackers or medical devices to monitor health metrics.
 Third-Party Systems: Integration with other hospital systems like laboratory systems, pharmacy systems, and radiology.
 
-
-so the logout should only try to log out someone based on their model*
-loook at the appointment, records, patients, models

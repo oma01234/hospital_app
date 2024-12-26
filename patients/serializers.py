@@ -14,6 +14,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         model = Profile
         fields = ['user', 'phone_number', 'emergency_contact', 'medical_history', 'allergies', 'insurance_details']
 
+
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -28,25 +29,29 @@ class RegisterSerializer(serializers.ModelSerializer):
         )
         return user
 
+
 class MedicationReminderSerializer(serializers.ModelSerializer):
     class Meta:
         model = MedicationReminder
         fields = ['id', 'patient', 'medication_name', 'dosage', 'time', 'reminder_text', 'is_taken']
+
 
 class TreatmentPlanSerializer(serializers.ModelSerializer):
     class Meta:
         model = TreatmentPlan
         fields = ['id', 'patient', 'treatment_description', 'start_date', 'end_date', 'progress_notes']
 
-class BillSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Bill
-        fields = ['id', 'patient', 'total_amount', 'paid_amount', 'due_date', 'is_paid']
+# class BillSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Bill
+#         fields = ['id', 'patient', 'total_amount', 'paid_amount', 'due_date', 'is_paid']
+
 
 class FeedbackSerializer(serializers.ModelSerializer):
     class Meta:
         model = Feedback
         fields = ['id', 'patient', 'rating', 'comments']
+
 
 class EmergencyServiceSerializer(serializers.ModelSerializer):
     class Meta:

@@ -13,10 +13,6 @@ class AppointmentViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(patient=self.request.user)
 
-class DoctorViewSet(viewsets.ModelViewSet):
-    queryset = Doctor.objects.all()
-    serializer_class = DoctorSerializer
-    permission_classes = [permissions.IsAuthenticated]
 
 
 class ConsultationNoteViewSet(viewsets.ModelViewSet):

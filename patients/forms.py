@@ -61,16 +61,51 @@ class ProfileForm(forms.ModelForm):
         return phone_number
 
 
+class ProfileUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = [
+            'phone_number',
+            'emergency_contact',
+            'medical_history',
+            'allergies',
+            'insurance_details',
+            'next_of_kin_name',
+            'next_of_kin_phone_number',
+            'next_of_kin_email',
+            'next_of_kin_address',
+            'next_of_kin_relationship'
+        ]
+        widgets = {
+            'medical_history': forms.Textarea(attrs={'rows': 4, 'placeholder': 'Enter medical history'}),
+            'allergies': forms.Textarea(attrs={'rows': 4, 'placeholder': 'Enter allergy information'}),
+            'insurance_details': forms.Textarea(attrs={'rows': 4, 'placeholder': 'Enter insurance details'}),
+            'next_of_kin_address': forms.Textarea(attrs={'rows': 2, 'placeholder': 'Enter next of kin address'}),
+        }
+        labels = {
+            'phone_number': 'Phone Number',
+            'emergency_contact': 'Emergency Contact',
+            'medical_history': 'Medical History',
+            'allergies': 'Allergies',
+            'insurance_details': 'Insurance Details',
+            'next_of_kin_name': 'Next of Kin Name',
+            'next_of_kin_phone_number': 'Next of Kin Phone Number',
+            'next_of_kin_email': 'Next of Kin Email',
+            'next_of_kin_address': 'Next of Kin Address',
+            'next_of_kin_relationship': 'Next of Kin Relationship',
+        }
+
+
 class MedicationReminderForm(forms.ModelForm):
     class Meta:
         model = MedicationReminder
         fields = ['medication_name', 'dosage', 'time', 'reminder_text']
 
 
-class BillForm(forms.ModelForm):
-    class Meta:
-        model = Bill
-        fields = ['total_amount', 'paid_amount', 'due_date', 'is_paid']
+# class BillForm(forms.ModelForm):
+#     class Meta:
+#         model = Bill
+#         fields = ['total_amount', 'paid_amount', 'due_date', 'is_paid']
 
 
 class FeedbackForm(forms.ModelForm):

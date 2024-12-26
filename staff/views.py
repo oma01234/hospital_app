@@ -1,5 +1,5 @@
 # views.py
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import *
 from django.contrib.auth import login, authenticate
 from django.http import HttpResponseForbidden
@@ -7,11 +7,11 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test
 from .models import *
 from django.utils import timezone
-from django.shortcuts import render, get_object_or_404
 from .forms import *
 from django.http import FileResponse
 from django.contrib.auth import logout
 from django.contrib import messages
+from patients.models import Profile
 
 
 def register(request):
@@ -205,9 +205,41 @@ def manage_patient_assignment(request, assignment_id):
     return render(request, 'staff/manage_patient_assignment.html', {'assignment': assignment})
 
 
+# View to search for a patient by username or email
+@login_required
+def search_patient(request):
+    query = request.GET.get('q', '')
+    if query:
+        patients = Patient.objects.filter(user__username__icontains=query) | Patient.objects.filter(user__email__icontains=query)
+    else:
+        patients = Patient.objects.all()
+    return render(request, 'staff/search_patient.html', {'patients': patients, 'query': query})
+
+
+# View to display patient details and their options (add vitals, progress tracking, etc.)
+@login_required
+def display_patient(request, patient_id):
+    patient = get_object_or_404(Patient, id=patient_id)
+    vitals = VitalSign.objects.filter(patient=patient)
+    progress_reports = ProgressTracking.objects.filter(patient=patient)
+    care_plans = CarePlan.objects.filter(patient=patient)
+    medical_records = MedicalRecord.objects.filter(patient=patient)
+    lab_tests = LabTest.objects.filter(patient=patient)
+    prescriptions = Prescription.objects.filter(patient=patient)
+
+    return render(request, 'staff/display_patient.html', {
+        'patient': patient,
+        'vitals': vitals,
+        'progress_reports': progress_reports,
+        'care_plans': care_plans,
+        'medical_records': medical_records,
+        'lab_tests': lab_tests,
+        'prescriptions': prescriptions
+    })
+
 @login_required
 def add_vitals(request, patient_id):
-    patient = get_object_or_404(User, id=patient_id)
+    patient = get_object_or_404(Patient, id=patient_id)
     if request.method == 'POST':
         blood_pressure = request.POST['blood_pressure']
         temperature = request.POST['temperature']
@@ -229,7 +261,7 @@ def add_vitals(request, patient_id):
 
 @login_required
 def add_progress_tracking(request, patient_id):
-    patient = get_object_or_404(User, id=patient_id)
+    patient = get_object_or_404(Patient, id=patient_id)
     if request.method == 'POST':
         progress_notes = request.POST['progress_notes']
 
@@ -276,7 +308,7 @@ def view_care_plan(request, patient_id):
 
 @login_required
 def add_medical_record(request, patient_id):
-    patient = get_object_or_404(User, id=patient_id)
+    patient = get_object_or_404(Patient, id=patient_id)
     if request.method == 'POST':
         diagnoses = request.POST['diagnoses']
         treatment_history = request.POST['treatment_history']
@@ -304,7 +336,7 @@ def view_medical_record(request, patient_id):
 
 @login_required
 def order_lab_test(request, patient_id):
-    patient = get_object_or_404(User, id=patient_id)
+    patient = get_object_or_404(Patient, id=patient_id)
     if request.method == 'POST':
         test_name = request.POST['test_name']
         LabTest.objects.create(
@@ -342,7 +374,7 @@ def add_lab_result(request, lab_test_id):
 
 @login_required
 def prescribe_medication(request, patient_id):
-    patient = get_object_or_404(User, id=patient_id)
+    patient = get_object_or_404(Patient, id=patient_id)
     if request.method == 'POST':
         medication_name = request.POST['medication_name']
         dosage = request.POST['dosage']
@@ -534,22 +566,6 @@ def report_list(request):
 def report_detail(request, report_id):
     report = get_object_or_404(Report, id=report_id)
     return render(request, 'staff/report_detail.html', {'report': report})
-
-
-@login_required
-def update_profile(request):
-    profile = get_object_or_404(Profile, user=request.user)
-
-    if request.method == 'POST':
-        form = ProfileUpdateForm(request.POST, instance=profile)
-        if form.is_valid():
-            # Save the form and automatically set `modified_by` in the signal
-            form.save()
-            return redirect('profile_detail')  # Redirect to profile details page after saving
-    else:
-        form = ProfileUpdateForm(instance=profile)
-
-    return render(request, 'profile/update_profile.html', {'form': form, 'profile': profile})
 
 
 def audit_log_list(request):

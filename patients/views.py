@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from .forms import *
 from .models import *
@@ -84,17 +84,30 @@ def home(request):
 
     return render(request, 'patients/home.html')
 
+
 @login_required
 # Profile View
 def profile(request):
-    profile = request.user.profile
+
+    view_profile = get_object_or_404(Profile, user=request.user)
+
+    return render(request, 'profile/profile.html', {'profile': view_profile})
+
+
+@login_required
+def update_profile(request):
+    profile = get_object_or_404(Profile, user=request.user)
+
     if request.method == 'POST':
-        form = ProfileForm(request.POST, instance=profile)
+        form = ProfileUpdateForm(request.POST, instance=profile)
         if form.is_valid():
+            # Save the form and automatically set `modified_by` in the signal
             form.save()
+            return redirect('profile_detail')  # Redirect to profile details page after saving
     else:
-        form = ProfileForm(instance=profile)
-    return render(request, 'patients/profile.html', {'form': form})
+        form = ProfileUpdateForm(instance=profile)
+
+    return render(request, 'profile/update_profile.html', {'form': form, 'profile': profile})
 
 
 @login_required
@@ -104,9 +117,9 @@ def medication_reminders(request):
 
 
 @login_required
-def bill_list(request):
-    bills = Bill.objects.filter(patient=request.user)
-    return render(request, 'appointments/bill_list.html', {'bills': bills})
+# def bill_list(request):
+#     bills = Bill.objects.filter(patient=request.user)
+#     return render(request, 'appointments/bill_list.html', {'bills': bills})
 
 
 @login_required
@@ -133,3 +146,5 @@ def treatment_plans(request):
 def emergency_contact(request):
     emergency_service = EmergencyService.objects.filter(patient=request.user).first()  # Assuming only one service request per patient
     return render(request, 'appointments/emergency_contact.html', {'emergency_service': emergency_service})
+
+
