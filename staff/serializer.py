@@ -2,11 +2,55 @@
 from rest_framework import serializers
 from .models import *
 from patients.models import Patient
+from django.contrib.auth import authenticate
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'first_name', 'last_name']
+
 
 class StaffSerializer(serializers.ModelSerializer):
+    user = UserSerializer()  # Use a nested serializer for the User model
+
     class Meta:
         model = Staff
-        fields = ['id', 'username', 'role', 'specialty', 'phone_number', 'profile_picture']
+        fields = ['id', 'user', 'role', 'phone_number']  # Include fields relevant to Staff
+
+    def create(self, validated_data):
+        user_data = validated_data.pop('user')
+        user = User.objects.create(**user_data)
+        staff = Staff.objects.create(user=user, **validated_data)
+        return staff
+
+
+class RegisterSerializer(serializers.Serializer):
+    username = serializers.CharField(max_length=150)
+    email = serializers.EmailField()
+    password = serializers.CharField(write_only=True, style={'input_type': 'password'})
+
+    def create(self, validated_data):
+        # Create the user
+        user = User.objects.create_user(
+            username=validated_data['username'],
+            email=validated_data['email'],
+            password=validated_data['password']
+        )
+        # Create and return a Staff instance tied to the user
+        return Staff.objects.create(user=user)
+
+
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField(write_only=True)
+
+    def validate(self, data):
+        user = authenticate(username=data['username'], password=data['password'])
+        if not user:
+            raise ValidationError('Invalid username or password.')
+        data['user'] = user
+        return data
 
 
 class DoctorScheduleSerializer(serializers.ModelSerializer):

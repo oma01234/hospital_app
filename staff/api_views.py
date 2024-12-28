@@ -12,12 +12,17 @@ from .utils import generate_report_pdf
 from rest_framework.decorators import action
 from rest_framework.exceptions import NotFound
 from patients.models import Patient
+from django.contrib.auth import login, logout
+from rest_framework.authtoken.models import Token
+from rest_framework.permissions import AllowAny
+
 
 
 # Define the permission classes
 class StaffPermission(IsAuthenticated):
     def has_permission(self, request, view):
-        return request.user.is_staff
+        return hasattr(request.user, 'staff')
+
 
 # adjust the apis to work properly, especially the staff p
 class DoctorPermission(IsDoctor):
@@ -30,7 +35,39 @@ class DoctorPermission(IsDoctor):
 class StaffViewSet(viewsets.ModelViewSet):
     queryset = Staff.objects.all()
     serializer_class = StaffSerializer
-    permission_classes = [StaffPermission]  # Only staff can access this
+    permission_classes = [AllowAny]  # Only staff can access this
+
+    @action(detail=False, methods=['post'], permission_classes=[IsAuthenticated])
+    def logout(self, request):
+        logout(request)
+        return Response({'message': 'Logged out successfully.'}, status=status.HTTP_200_OK)
+
+
+class RegisterView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        return Response({"message": "Send a POST request with user registration details."}, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        print('data sent')
+        serializer = RegisterSerializer(data=request.data)
+        if serializer.is_valid():
+            staff = serializer.save()
+            return Response({'message': 'Registration successful!'}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class LoginView(APIView):
+    def post(self, request):
+        username = request.data.get('username')
+        password = request.data.get('password')
+
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return Response({'message': 'Login successful!'}, status=status.HTTP_200_OK)
+        return Response({'error': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 # Doctor viewset (access restricted to doctors)

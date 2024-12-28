@@ -5,7 +5,7 @@ from .api_views import *
 from .views import *
 
 router = DefaultRouter()
-router.register(r'staff', StaffViewSet, basename='staff')
+router.register(r'staff', StaffViewSet, basename='staff-users')
 router.register(r'doctors', DoctorViewSet, basename='doctor')
 router.register(r'doctor-schedules', DoctorScheduleViewSet, basename='doctor_schedule')
 router.register(r'appointments', AppointmentViewSet, basename='appointment')
@@ -33,10 +33,17 @@ router.register(r'patients', PatientViewSet, basename='patient')
 
 app_name = 'staff'
 
+custom_auth_urls = [
+    path('login/', LoginView.as_view(), name='staff-login'),
+    path('register/', RegisterView.as_view(), name='staff-register'),
+    path('logout/', StaffViewSet.as_view({'post': 'logout'}), name='staff-logout')
+
+]
+
 urlpatterns = [
     # Register and login URLs
     path('register/', views.register, name='register'),
-    path('staff/login/', views.login_view, name='login'),
+    path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
 
     # Dashboard
@@ -129,12 +136,15 @@ urlpatterns = [
     path('staff/<int:staff_id>/certifications/', views.staff_certifications, name='staff_certifications'),
     # URL for showing certifications for a specific staff member
 
-    # API Routes for Doctor, Appointment, etc.
-    path('api/', include(router.urls)),
+
     path('emergency-alerts/', EmergencyAlertCreateView.as_view, name='emergency-alert-create'),
     path('emergency-alerts/', EmergencyAlertListView.as_view(), name='emergency_alert_list'),
     path('emergency-alerts/update/<int:pk>/', EmergencyAlertUpdateView.as_view(), name='emergency_alert_update'),
 
     path('unauthorized/', views.unauthorized, name='unauthorized'),
 
+
+    # API Routes for Doctor, Appointment, etc.
+    path('api/', include(router.urls)),
+    path('api/auth/', include(custom_auth_urls)),
 ]

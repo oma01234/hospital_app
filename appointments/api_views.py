@@ -8,10 +8,10 @@ class AppointmentViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        return self.queryset.filter(patient=self.request.user)
+        return self.queryset.filter(patient=self.request.user.Patient)
 
     def perform_create(self, serializer):
-        serializer.save(patient=self.request.user)
+        serializer.save(patient=self.request.user.Patient)
 
 
 
@@ -21,4 +21,4 @@ class ConsultationNoteViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        return self.queryset.filter(appointment__patient=self.request.user)
+        return self.queryset.filter(appointment__patient=self.request.user.Patient)

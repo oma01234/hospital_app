@@ -8,10 +8,10 @@ class MedicalRecordViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        return self.queryset.filter(patient=self.request.user)
+        return self.queryset.filter(patient=self.request.user.Patient)
 
     def perform_create(self, serializer):
-        serializer.save(patient=self.request.user)
+        serializer.save(patient=self.request.user.Patient)
 
 class HealthReportViewSet(viewsets.ModelViewSet):
     queryset = HealthReport.objects.all()
@@ -19,7 +19,7 @@ class HealthReportViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        return self.queryset.filter(patient=self.request.user)
+        return self.queryset.filter(patient=self.request.user.Patient)
 
 class PrescriptionViewSet(viewsets.ModelViewSet):
     queryset = Prescription.objects.all()
@@ -27,7 +27,7 @@ class PrescriptionViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        return self.queryset.filter(patient=self.request.user)
+        return self.queryset.filter(patient=self.request.user.Patient)
 
     def perform_create(self, serializer):
-        serializer.save(patient=self.request.user)
+        serializer.save(patient=self.request.user.Patient)

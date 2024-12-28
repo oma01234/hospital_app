@@ -12,7 +12,7 @@ urlpatterns = [
     # Template-based views
     path('patients/register/', views.register, name='register'),
     path('patients/login/', views.login_view, name='login'),
-    path('logout/', views.logout_view, name='logout'),
+    path('patients/logout/', views.logout_view, name='logout'),
     path('home/', views.home, name='home'),
     path('profile/', views.profile, name='profile'),
     path('profile/update/', views.update_profile, name='update_profile'),
@@ -25,6 +25,9 @@ urlpatterns = [
 
     # API views
     path('api/register/', RegisterView.as_view(), name='api_register'),
+    path('api/login/', LoginView.as_view(), name='api_login'),
+    path('api/logout/', LogoutView.as_view(), name='api_logout'),
+
     path('api/profile/', ProfileView.as_view(), name='api_profile'),
     path('api/profile/update/', UpdateProfileView.as_view(), name='api_update_profile'),
 

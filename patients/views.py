@@ -68,7 +68,7 @@ def logout_view(request):
     # Check if the logged-in user has a Profile (i.e., is a patient)
     try:
         # Attempt to access the Profile using the related_name 'profile'
-        profile = request.user.profile  # This will raise an exception if no Profile exists
+        profile = request.user.Patient.profile  # This will raise an exception if no Profile exists
 
         # If the user has a Profile, they are a patient
         logout(request)
@@ -96,7 +96,7 @@ def profile(request):
 
 @login_required
 def update_profile(request):
-    profile = get_object_or_404(Profile, user=request.user)
+    profile = get_object_or_404(Profile, user=request.user.Patient)
 
     if request.method == 'POST':
         form = ProfileUpdateForm(request.POST, instance=profile)
@@ -112,7 +112,7 @@ def update_profile(request):
 
 @login_required
 def medication_reminders(request):
-    reminders = MedicationReminder.objects.filter(patient=request.user)
+    reminders = MedicationReminder.objects.filter(patient=request.user.Patient)
     return render(request, 'appointments/medication_reminders.html', {'reminders': reminders})
 
 
@@ -127,7 +127,7 @@ def feedback_form(request):
     if request.method == 'POST':
         form = FeedbackForm(request.POST)
         if form.is_valid():
-            form.save(patient=request.user)
+            form.save(patient=request.user.Patient)
             return redirect('appointments:feedback_submitted')
     else:
         form = FeedbackForm()
@@ -137,14 +137,14 @@ def feedback_form(request):
 # Treatment Plans View
 @login_required
 def treatment_plans(request):
-    plans = TreatmentPlan.objects.filter(patient=request.user)
+    plans = TreatmentPlan.objects.filter(patient=request.user.Patient)
     return render(request, 'appointments/treatment_plans.html', {'plans': plans})
 
 
 # Emergency Contact View
 @login_required
 def emergency_contact(request):
-    emergency_service = EmergencyService.objects.filter(patient=request.user).first()  # Assuming only one service request per patient
+    emergency_service = EmergencyService.objects.filter(patient=request.user.Patient).first()  # Assuming only one service request per patient
     return render(request, 'appointments/emergency_contact.html', {'emergency_service': emergency_service})
 
 

@@ -1,0 +1,51 @@
+{% extends "staff/base.html" %}
+{% load static %}
+
+{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Doctor-Patient Messages</title>
+    <style>
+        /* Basic styling - customize as needed */
+        body {
+            font-family: sans-serif;
+            margin: 20px;
+        }
+        .message-container {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 15px;
+        }
+        .message-sender {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .message-timestamp {
+            color: #888;
+            font-size: smaller;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Doctor-Patient Messages</h1>
+
+    {% for message in messages %}
+        <div class="message-container">
+            <span class="message-sender">{% if message.sender == 'doctor' %}Doctor{% else %}You{% endif %}</span><br>
+            <span class="message-timestamp">{{ message.timestamp }}</span><br>
+            <p>{{ message.content }}</p>
+        </div>
+    {% endfor %}
+
+    <form method="post">
+        {% csrf_token %}
+        <textarea name="message" rows="4" cols="50" placeholder="Type your message here"></textarea><br>
+        <button type="submit">Send</button>
+    </form>
+
+</body>
+</html>
+{% endblock %}

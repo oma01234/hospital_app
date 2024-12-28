@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'records',
     'staff',
     'rest_framework',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -53,7 +54,9 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'patients.custom_middleware.DynamicLoginURLMiddleware',
-    'staff.custom_middleware.DynamicLoginURLMiddleware'
+    'staff.custom_middleware.DynamicLoginURLMiddleware',
+    # 'staff.custom_middleware.StaffOnlyMiddleware'
+
 ]
 
 ROOT_URLCONF = 'hospital.urls'

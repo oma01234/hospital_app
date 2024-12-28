@@ -1,4 +1,6 @@
+{% extends "staff/base.html" %}
 <!-- view_medical_record.html -->
+{% block content %}
 <h1>Medical Record for {{ patient.user.username }}</h1>
 {% for record in medical_records %}
     <p><strong>Diagnoses:</strong> {{ record.diagnoses }}</p>
@@ -8,3 +10,4 @@
     <p><strong>Medications:</strong> {{ record.medications }}</p>
     <hr>
 {% endfor %}
+{% endblock %}

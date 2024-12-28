@@ -4,13 +4,16 @@ from datetime import datetime, date
 from .models import *
 from .forms import *
 
+now = datetime.now()
+today = now.date()
+
 @login_required
 def book_appointment(request):
     if request.method == 'POST':
         form = AppointmentForm(request.POST, patient=request.user.Patient)  # Pass the logged-in user (patient) to the form
         if form.is_valid():
             appointment = form.save(commit=False)
-            appointment.patient = request.user  # Set the patient explicitly to the logged-in user
+            appointment.patient = request.user.Patient  # Set the patient explicitly to the logged-in user
             appointment.save()
             return redirect('appointments:appointment_list')  # Redirect to the appointment list or another page
     else:
@@ -22,14 +25,14 @@ def book_appointment(request):
 
 @login_required
 def appointment_list(request):
-    appointments = Appointment.objects.filter(patient=request.user)
+    appointments = Appointment.objects.filter(patient=request.user.Patient)
     return render(request, 'appointments/appointment_list.html', {'appointments': appointments})
 
 
 @login_required
 def consultation_history(request):
-    past_appointments = Appointment.objects.filter(patient=request.user, date__lt=now().date())
-    upcoming_appointments = Appointment.objects.filter(patient=request.user, date__gte=now().date())
+    past_appointments = Appointment.objects.filter(patient=request.user.Patient, date__lt=today)
+    upcoming_appointments = Appointment.objects.filter(patient=request.user.Patient, date__lt=today)
     return render(request, 'appointments/consultation_history.html', {
         'past_appointments': past_appointments,
         'upcoming_appointments': upcoming_appointments,
@@ -42,7 +45,7 @@ def book_virtual_consultation(request):
         form = AppointmentForm(request.POST)
         if form.is_valid():
             appointment = form.save(commit=False)
-            appointment.patient = request.user
+            appointment.patient = request.user.Patient
             appointment.consultation_type = 'Virtual'
             appointment.save()
             return redirect('appointments:appointment_list')

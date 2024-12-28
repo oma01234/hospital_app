@@ -92,6 +92,7 @@ def staff_dashboard(request):
 def is_doctor(user):
     return user.staff.role == 'doctor'
 
+
 @user_passes_test(is_doctor)
 def doctor_view(request):
     # Doctor-specific view logic
@@ -236,6 +237,7 @@ def display_patient(request, patient_id):
         'lab_tests': lab_tests,
         'prescriptions': prescriptions
     })
+
 
 @login_required
 def add_vitals(request, patient_id):
@@ -438,16 +440,19 @@ def send_staff_message(request):
     return render(request, 'staff/send_staff_message.html', {'staff_members': staff_members})
 
 
+@login_required
 def doctor_patient_messages(request, patient_id):
-    messages = DoctorPatientMessage.objects.filter(patient_id=patient_id)
+    messages = DoctorPatientMessage.objects.filter(id=patient_id)
     return render(request, 'staff/doctor_patient_messages.html', {'messages': messages, 'patient_id': patient_id})
 
 
+@login_required
 def patient_messages(request):
     messages = DoctorPatientMessage.objects.filter(patient_id=request.user.patient.id)
     return render(request, 'staff/patient_messages.html', {'messages': messages})
 
 
+@login_required
 def team_collaboration(request, patient_id):
     team_messages = TeamMessage.objects.filter(patient_id=patient_id)
     return render(request, 'staff/team_collaboration.html', {'messages': team_messages, 'patient_id': patient_id})
@@ -515,6 +520,7 @@ def emergency_alert_list(request):
     return render(request, 'staff/emergency_alert_list.html', {'alerts': alerts})
 
 
+@login_required
 def acknowledge_alert(request, pk):
     alert = get_object_or_404(EmergencyAlert, pk=pk)
     alert.status = 'acknowledged'
@@ -522,6 +528,7 @@ def acknowledge_alert(request, pk):
     return redirect('emergency_alert_list')
 
 
+@login_required
 def resolve_alert(request, pk):
     alert = get_object_or_404(EmergencyAlert, pk=pk)
     alert.status = 'resolved'
@@ -530,81 +537,96 @@ def resolve_alert(request, pk):
     return redirect('emergency_alert_list')
 
 
+@login_required
 def order_management(request):
     orders = Order.objects.all()
     return render(request, 'staff/order_management.html', {'orders': orders})
 
 
+@login_required
 def stock_alerts(request):
     alerts = StockAlert.objects.filter(alert_status='unresolved')
     return render(request, 'staff/stock_alerts.html', {'alerts': alerts})
 
 
+@login_required
 def medical_supply_inventory(request):
     supplies = MedicalSupply.objects.all()
     return render(request, 'staff/medical_supply_inventory.html', {'supplies': supplies})
 
 
+@login_required
 def dashboard_view(request):
     metrics = HospitalPerformanceMetrics.objects.latest('updated_at')
     analytics = PerformanceAnalytics.objects.order_by('-report_date')[:5]
     return render(request, 'staff/hospital_dashboard.html', {'metrics': metrics, 'analytics': analytics})
 
 
+@login_required
 def resource_allocation_view(request):
     resources = ResourceAllocation.objects.all()
     return render(request, 'resource_allocation.html', {'resources': resources})
 
 
+@login_required
 def download_report(request, report_id):
     report = Report.objects.get(id=report_id)
     return FileResponse(open(report.file_path.path, 'rb'), content_type='application/pdf')
 
 
+@login_required
 def report_list(request):
     reports = Report.objects.all()
     return render(request, 'staff/report_list.html', {'reports': reports})
 
 
+@login_required
 def report_detail(request, report_id):
     report = get_object_or_404(Report, id=report_id)
     return render(request, 'staff/report_detail.html', {'report': report})
 
 
+@login_required
 def audit_log_list(request):
     logs = AuditLog.objects.all()
     return render(request, 'staff/audit_log_list.html', {'logs': logs})
 #might give me some issues
 
 
+@login_required
 def audit_log_detail(request, log_id):
     log = get_object_or_404(AuditLog, id=log_id)
     return render(request, 'staff/audit_log_detail.html', {'log': log})
 
 
+@login_required
 # View to display all Health & Safety Protocols
 def health_and_safety_protocols(request):
     protocols = HealthAndSafetyProtocol.objects.all()
     return render(request, 'staff/health_and_safety_protocols.html', {'protocols': protocols})
 
 
+@login_required
 # View to display all Infection Control Practices
 def infection_control_practices(request):
     practices = InfectionControlPractice.objects.all()
     return render(request, 'staff/infection_control_practices.html', {'practices': practices})
 
 
+@login_required
 def staff_list(request):
     staff_members = Staff.objects.all()  # Get all staff members
     return render(request, 'staff/staff_list.html', {'staff_members': staff_members})
 
 
+@login_required
 def staff_certifications(request, staff_id):
     staff_member = get_object_or_404(Staff, id=staff_id)  # Get the staff member by ID
     certifications = staff_member.certifications.all()  # Get the certifications for that staff member
     return render(request, 'staff/staff_certifications.html', {'staff_member': staff_member, 'certifications': certifications})
 
 
+@login_required
 def notification_list(request):
     notifications = Notification.objects.filter(recipient=request.user).order_by('-created_at')
     return render(request, 'staff/notifications.html', {'notifications': notifications})

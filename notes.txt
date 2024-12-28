@@ -117,3 +117,4 @@ Integrations
 Wearable Devices Integration: Integration with fitness trackers or medical devices to monitor health metrics.
 Third-Party Systems: Integration with other hospital systems like laboratory systems, pharmacy systems, and radiology.
 
+adjust the api_views for all apps where necessary
