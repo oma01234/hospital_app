@@ -54,8 +54,9 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'patients.custom_middleware.DynamicLoginURLMiddleware',
+    'patients.custom_middleware.PatientOnlyMiddleware',
     'staff.custom_middleware.DynamicLoginURLMiddleware',
-    # 'staff.custom_middleware.StaffOnlyMiddleware'
+    'staff.custom_middleware.StaffOnlyMiddleware'
 
 ]
 

@@ -17,7 +17,6 @@ from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny
 
 
-
 # Define the permission classes
 class StaffPermission(IsAuthenticated):
     def has_permission(self, request, view):

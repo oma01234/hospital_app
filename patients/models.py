@@ -27,8 +27,6 @@ class Profile(models.Model):
     medical_history = models.TextField(blank=True, null=True)
     allergies = models.TextField(blank=True, null=True)
     insurance_details = models.TextField(blank=True, null=True)
-    modified_by = models.ForeignKey('staff.Staff', null=True, blank=True, on_delete=models.SET_NULL,
-                                    related_name='modified_profiles')
     
     next_of_kin_name = models.CharField(max_length=100, blank=True, null=True)
     next_of_kin_phone_number = models.CharField(max_length=15, blank=True, null=True)
