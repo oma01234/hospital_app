@@ -94,12 +94,11 @@ urlpatterns = [
     # Staff messages
     path('staff/messages/', views.staff_messages, name='staff_messages'),
     path('staff/messages/send/', views.send_staff_message, name='send_staff_message'),
+    path('inbox/', views.staff_inbox, name='staff_inbox'),
+    path('message/<int:message_id>/', views.message_detail, name='message_detail'),
 
     # Doctor-patient messages
     path('doctor/patient/<int:patient_id>/messages/', views.doctor_patient_messages, name='doctor_patient_messages'),
-
-    # Patient messages
-    path('patient/messages/', views.patient_messages, name='patient_messages'),
 
     # Team collaboration
     path('team/collaboration/<int:patient_id>/', views.team_collaboration, name='team_collaboration'),

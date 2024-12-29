@@ -1,0 +1,23 @@
+{% extends 'patients/base.html' %}
+
+{% block title %}Patient Messages{% endblock %}
+
+{% block content %}
+
+<div class="message-detail">
+    <h2>Message from {{ message.sender.user.username }}</h2>
+    <p><strong>Sent at:</strong> {{ message.sent_at }}</p>
+    <p><strong>Message:</strong> {{ message.message_content }}</p>
+
+    {% if message.patient_reply %}
+        <p><strong>Your Reply:</strong> {{ message.patient_reply }}</p>
+    {% else %}
+        <form method="POST">
+            {% csrf_token %}
+            <textarea name="patient_reply" rows="4" placeholder="Type your reply here..." required></textarea>
+            <button type="submit">Send Reply</button>
+        </form>
+    {% endif %}
+</div>
+
+{% endblock %}

@@ -69,4 +69,27 @@ class StaffUserCreationForm(forms.ModelForm):
 
 
 
+class DoctorPatientMessageForm(forms.ModelForm):
+    class Meta:
+        model = DoctorPatientMessage  # Specify the model
+        fields = ['message_content']
+
+    def __init__(self, *args, **kwargs):
+        self.sender = kwargs.pop('sender')  # Get the sender (User)
+        self.patient_id = kwargs.pop('patient_id')  # Get the patient ID
+        super().__init__(*args, **kwargs)
+
+    def save(self, commit=True):
+        # Get the Staff instance from the sender (User)
+        staff = Staff.objects.get(user=self.sender)
+
+        # Create the message
+        message = super().save(commit=False)
+        message.sender = staff  # Set the sender to the Staff instance
+        message.recipient = Patient.objects.get(id=self.patient_id)  # Set the recipient to the Patient
+
+        if commit:
+            message.save()
+        return message
+
 

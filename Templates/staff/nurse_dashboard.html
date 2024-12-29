@@ -6,10 +6,14 @@
     <h1>Welcome, Nurse {{ user.first_name }}</h1>
     <p>Here are your tasks for today:</p>
 
+
+    <a href="{% url 'staff:search_patient' %}"> <button type="submit">Search for patients</button> </a>
+
     <!-- Display nurse-specific tasks, like lab test management, stock alerts, etc. -->
+    <!-- Figure our what will be on this dashboard since i have updated it -->
+
     <ul>
         <li><a href="{% url 'staff:view_lab_tests' patient_id=1 %}">View Lab Tests</a></li>
-        <li><a href="{% url 'staff:patient_messages' %}">Patient Messages</a></li>
         <li><a href="{% url 'staff:team_collaboration' patient_id=1 %}">Team Collaboration</a></li>
         <li><a href="{% url 'staff:emergency_alert_list' %}">Emergency Alerts</a></li>
         <li><a href="{% url 'staff:acknowledge_alert' pk=1 %}">Acknowledge Alert</a></li>
@@ -17,6 +21,5 @@
         <li><a href="{% url 'staff:stock_alerts' %}">Stock Alerts</a></li>
         <li><a href="{% url 'staff:medical_supply_inventory' %}">Medical Supply Inventory</a></li>
         <li><a href="{% url 'staff:staff_messages' %}">Staff messages</a></li>
-        <li><a href="{% url 'staff:team_collaboration' %}">Team</a></li>
     </ul>
 {% endblock %}

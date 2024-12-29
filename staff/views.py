@@ -1,5 +1,5 @@
 # views.py
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.contrib.auth.forms import *
 from django.contrib.auth import login, authenticate
 from django.http import HttpResponseForbidden
@@ -12,7 +12,8 @@ from django.http import FileResponse
 from django.contrib.auth import logout
 from django.contrib import messages
 from patients.models import Profile
-
+from urllib.parse import urlencode
+from django.utils.timezone import now
 
 def register(request):
     if request.method == 'POST':
@@ -72,8 +73,10 @@ def logout_view(request):
         logout(request)
 
     # Redirect to the login page with the alert message
-    return redirect('staff:login') + f"?alert_message={alert_message}"
-
+    url = reverse('staff:login')  # Get the URL for the login page
+    query_params = urlencode({'alert_message': alert_message})  # Encode the query parameters
+    return redirect(f"{url}?{query_params}")
+    # fix this guy later abeg
 
 # Example view: Staff dashboard
 @login_required
@@ -227,6 +230,8 @@ def display_patient(request, patient_id):
     medical_records = MedicalRecord.objects.filter(patient=patient)
     lab_tests = LabTest.objects.filter(patient=patient)
     prescriptions = Prescription.objects.filter(patient=patient)
+
+    print(request.user.username)
 
     return render(request, 'staff/display_patient.html', {
         'patient': patient,
@@ -411,26 +416,29 @@ def staff_messages(request):
 
 @login_required
 def send_staff_message(request):
+    staff_members = Staff.objects.exclude(user=request.user)  # or any filtering logic you prefer
+
+    for staff in staff_members:
+        print(staff.user.username)
+
     if request.method == 'POST':
         recipient_id = request.POST.get('recipient_id')  # Assuming recipient's ID is passed in the form
         message_content = request.POST.get('message_content')  # The message content from the form
 
-        staff_members = Staff.objects.all()  # or any filtering logic you prefer
-
         if recipient_id and message_content:
             try:
                 recipient = Staff.objects.get(id=recipient_id)  # Get recipient from the ID
-                sender = request.user  # The currently logged-in user is the sender
+                sender = Staff.objects.get(user=request.user)
                 
                 # Create and save the message
                 message = StaffMessage(sender=sender, recipient=recipient, message_content=message_content)
                 message.save()
 
                 # Success message
-                messages.success(request, f"Message sent to {recipient.username} successfully.")
+                messages.success(request, f"Message sent to {recipient.user.username} successfully.")
                 
                 # Redirect to the inbox or another page (e.g., message list)
-                return redirect('staff_inbox')  # Change 'staff_inbox' to the appropriate URL name
+                return redirect('staff:send_staff_message')  # Change 'staff_inbox' to the appropriate URL name
             except Staff.DoesNotExist:
                 messages.error(request, "Recipient not found.")
         else:
@@ -441,15 +449,71 @@ def send_staff_message(request):
 
 
 @login_required
-def doctor_patient_messages(request, patient_id):
-    messages = DoctorPatientMessage.objects.filter(id=patient_id)
-    return render(request, 'staff/doctor_patient_messages.html', {'messages': messages, 'patient_id': patient_id})
+def staff_inbox(request):
+    try:
+        # Get the logged-in user's staff profile
+        current_staff = Staff.objects.get(user=request.user)
+
+        # Retrieve messages for the logged-in staff member
+        messages = StaffMessage.objects.filter(recipient=current_staff).order_by('-sent_at')
+    except Staff.DoesNotExist:
+        messages.error(request, "Staff profile not found.")
+        messages = None
+
+    # Render the inbox template
+    return render(request, 'staff/staff_inbox.html', {'messages': messages})
 
 
 @login_required
-def patient_messages(request):
-    messages = DoctorPatientMessage.objects.filter(patient_id=request.user.patient.id)
-    return render(request, 'staff/patient_messages.html', {'messages': messages})
+def message_detail(request, message_id):
+    try:
+        # Get the specific message
+        message = StaffMessage.objects.get(id=message_id, recipient__user=request.user)
+
+        # Mark as read if not already read
+        if not message.is_read:
+            message.is_read = True
+            message.read_at = now()
+            message.save()
+
+        # Render the message detail template
+        return render(request, 'staff/message_detail.html', {'message': message})
+    except StaffMessage.DoesNotExist:
+        messages.error(request, "Message not found or you do not have permission to view it.")
+        return redirect('staff_inbox')  # Redirect to inbox if message not found
+
+
+# request.user.staff_profile.role
+@login_required
+def doctor_patient_messages(request, patient_id):
+    # Get the patient instance
+    try:
+        recipient = Patient.objects.get(id=patient_id)
+    except Patient.DoesNotExist:
+        return render(request, 'staff/doctor_patient_messages.html', {'error': 'Patient not found'})
+
+    # Get messages for the patient
+    messages = DoctorPatientMessage.objects.filter(recipient=recipient)
+
+    if request.method == 'POST':
+        if request.user.staff_profile.role == 'doctor':  # Check if the user is a doctor
+            # Initialize the form with sender (the logged-in doctor) and patient_id
+            form = DoctorPatientMessageForm(request.POST, sender=request.user, patient_id=patient_id)
+            if form.is_valid():
+                form.save()  # Save the form
+                return redirect('staff:doctor_patient_messages', patient_id=patient_id)
+        else:
+            return redirect('staff:permission_denied')  # Handle permission error if not a doctor
+    else:
+        # Initialize the form with sender (the logged-in doctor) and patient_id
+        form = DoctorPatientMessageForm(sender=request.user, patient_id=patient_id)
+
+    return render(request, 'staff/doctor_patient_messages.html', {
+        'messages': messages,
+        'patient_id': patient_id,
+        'form': form,
+        'patient': recipient
+    })
 
 
 @login_required

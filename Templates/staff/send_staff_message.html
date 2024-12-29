@@ -23,7 +23,7 @@
             <select id="recipient" name="recipient_id" class="form-control" required>
                 <option value="" disabled selected>Select a recipient</option>
                 {% for staff_member in staff_members %}
-                    <option value="{{ staff_member.id }}">{{ staff_member.first_name }} {{ staff_member.last_name }} ({{ staff_member.username }})</option>
+                    <option value="{{ staff_member.id }}">{{ staff_member.user.username }} </option>
                 {% endfor %}
             </select>
         </div>

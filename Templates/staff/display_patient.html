@@ -6,64 +6,116 @@
 <h2>Patient: {{ patient.user.username }}</h2>
 <p>Email: {{ patient.user.email }}</p>
 
-<h3>Vitals</h3>
-<ul>
-    {% for vital in vitals %}
-        <li>{{ vital.blood_pressure }} | {{ vital.temperature }} | {{ vital.pulse }}</li>
-    {% empty %}
-        <p>No vitals recorded</p>
-    {% endfor %}
-</ul>
-<a href="{% url 'staff:add_vitals' patient.id %}">Add Vitals</a>
+{% if user.staff_profile.role == 'doctor' %}
+    <h3>Doctor Actions</h3>
 
-<h3>Progress Tracking</h3>
-<ul>
-    {% for report in progress_reports %}
-        <li>{{ report.progress_notes }}</li>
-    {% empty %}
-        <p>No progress reports</p>
-    {% endfor %}
-</ul>
-<a href="{% url 'staff:add_progress_tracking' patient.id %}">Add Progress Tracking</a>
+    <h3>Prescriptions</h3>
+    <ul>
+        {% for prescription in prescriptions %}
+            <li>{{ prescription.medication_name }} | {{ prescription.dosage }}</li>
+        {% empty %}
+            <p>No prescriptions</p>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'staff:prescribe_medication' patient.id %}">Prescribe Medication</a>
 
-<h3>Care Plans</h3>
-<ul>
-    {% for plan in care_plans %}
-        <li>{{ plan.plan_description }}</li>
-    {% empty %}
-        <p>No care plans</p>
-    {% endfor %}
-</ul>
-<a href="{% url 'staff:add_care_plan' patient.id %}">Add Care Plan</a>
+    <h3>Lab Tests</h3>
+    <ul>
+        {% for test in lab_tests %}
+            <li>{{ test.test_name }} | {{ test.status }}</li>
+        {% empty %}
+            <p>No lab tests</p>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'staff:order_lab_test' patient.id %}">Order Lab Test</a>
 
-<h3>Medical Records</h3>
-<ul>
-    {% for record in medical_records %}
-        <li>{{ record.diagnoses }}</li>
-    {% empty %}
-        <p>No medical records</p>
-    {% endfor %}
-</ul>
-<a href="{% url 'staff:add_medical_record' patient.id %}">Add Medical Record</a>
 
-<h3>Lab Tests</h3>
-<ul>
-    {% for test in lab_tests %}
-        <li>{{ test.test_name }} | {{ test.status }}</li>
-    {% empty %}
-        <p>No lab tests</p>
-    {% endfor %}
-</ul>
-<a href="{% url 'staff:order_lab_test' patient.id %}">Order Lab Test</a>
+    <h3>Care Plans</h3>
+    <ul>
+        {% for plan in care_plans %}
+            <li>{{ plan.plan_description }}</li>
+        {% empty %}
+            <p>No care plans</p>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'staff:add_care_plan' patient.id %}">Add Care Plan</a>
 
-<h3>Prescriptions</h3>
-<ul>
-    {% for prescription in prescriptions %}
-        <li>{{ prescription.medication_name }} | {{ prescription.dosage }}</li>
-    {% empty %}
-        <p>No prescriptions</p>
-    {% endfor %}
-</ul>
-<a href="{% url 'staff:prescribe_medication' patient.id %}">Prescribe Medication</a>
+    <h3>Progress Tracking</h3>
+    <ul>
+        {% for report in progress_reports %}
+            <li>{{ report.progress_notes }}</li>
+        {% empty %}
+            <p>No progress reports</p>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'staff:add_progress_tracking' patient.id %}">Add Progress Tracking</a>
 
+    <ul>
+        <li><a href="{% url 'staff:order_lab_test' patient_id=patient.id %}">Order Lab Test</a></li>
+        <li><a href="{% url 'staff:add_lab_result' lab_test_id=1 %}">Add Lab Result</a></li>
+        <li><a href="{% url 'staff:prescribe_medication' patient_id=patient.id %}">Prescribe Medication</a></li>
+        <li><a href="{% url 'staff:view_prescriptions' patient_id=patient.id %}">View Prescriptions</a></li>
+        <li><a href="{% url 'staff:doctor_patient_messages' patient_id=patient.id %}">Patient Messages</a></li>
+        <li><a href="{% url 'staff:health_and_safety_protocols' %}">Health & Safety Protocols</a></li>
+        <li><a href="{% url 'staff:infection_control_practices' %}">Infection Control Practices</a></li>
+        <li><a href="{% url 'staff:staff_certifications' staff_id=1 %}">Staff Certifications</a></li>
+        <li><a href="{% url 'staff:send_staff_message' %}">Send Staff Message</a></li>
+        <li><a href="{% url 'staff:doctor_patient_messages' patient_id=patient.id %}">Send Patient Message</a></li>
+        <li><a href="{% url 'staff:team_collaboration' patient_id=patient.id %}">Team Messages</a></li>
+    </ul>
+
+{% elif user.staff_profile.role == 'nurse' %}
+    <h3>Nurse Actions</h3>
+
+    <h3>Medical Records</h3>
+    <ul>
+        {% for record in medical_records %}
+            <li>{{ record.diagnoses }}</li>
+        {% empty %}
+            <p>No medical records</p>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'staff:add_medical_record' patient.id %}">Add Medical Record</a>
+
+    <h3>Vitals</h3>
+    <ul>
+        {% for vital in vitals %}
+            <li>{{ vital.blood_pressure }} | {{ vital.temperature }} | {{ vital.pulse }}</li>
+        {% empty %}
+            <p>No vitals recorded</p>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'staff:add_vitals' patient.id %}">Add Vitals</a>
+
+    <ul>
+        <li><a href="{% url 'staff:view_lab_tests' patient_id=patient.id %}">View Lab Tests</a></li>
+        <li><a href="{% url 'staff:patient_messages' %}">Patient Messages</a></li>
+        <li><a href="{% url 'staff:team_collaboration' patient_id=patient.id %}">Team Collaboration</a></li>
+        <li><a href="{% url 'staff:emergency_alert_list' %}">Emergency Alerts</a></li>
+        <li><a href="{% url 'staff:acknowledge_alert' pk=1 %}">Acknowledge Alert</a></li>
+        <li><a href="{% url 'staff:resolve_alert' pk=1 %}">Resolve Alert</a></li>
+        <li><a href="{% url 'staff:stock_alerts' %}">Stock Alerts</a></li>
+        <li><a href="{% url 'staff:medical_supply_inventory' %}">Medical Supply Inventory</a></li>
+        <li><a href="{% url 'staff:staff_messages' %}">Staff Messages</a></li>
+        <li><a href="{% url 'staff:team_collaboration' %}">Team Collaboration</a></li>
+    </ul>
+
+{% elif user.staff_profile.role == 'admin' %}
+    <h3>Admin Actions</h3>
+    <ul>
+        <li><a href="{% url 'staff:order_management' %}">Order Management</a></li>
+        <li><a href="{% url 'staff:stock_alerts' %}">Stock Alerts</a></li>
+        <li><a href="{% url 'staff:medical_supply_inventory' %}">Medical Supply Inventory</a></li>
+        <li><a href="{% url 'staff:dashboard_view' %}">Hospital Dashboard</a></li>
+        <li><a href="{% url 'staff:resource_allocation_view' %}">Resource Allocation</a></li>
+        <li><a href="{% url 'staff:report_list' %}">Report List</a></li>
+        <li><a href="{% url 'staff:audit_log_list' %}">Audit Logs</a></li>
+        <li><a href="{% url 'staff:staff_list' %}">Staff List</a></li>
+        <li><a href="{% url 'staff:staff_certifications' staff_id=1 %}">Staff Certifications</a></li>
+        <li><a href="{% url 'staff:notifications' %}">Notifications</a></li>
+        <li><a href="{% url 'staff:send_staff_message' %}">Send Staff Message</a></li>
+    </ul>
+{% else %}
+    <p>You do not have access to this section.</p>
+{% endif %}
 {% endblock %}

@@ -1,12 +1,17 @@
 {% extends 'staff/base.html' %}
+{% load static %}
 
 {% block title %} Doctor Dashboard {% endblock %}
 
 {% block content %}
-    <h1>Welcome, Dr. {{ user.first_name }}</h1>
+    <h1>Welcome, Dr. {{ user.username }}</h1>
     <p>Here are your tasks for today:</p>
 
+    <a href="{% url 'staff:search_patient' %}"> <button type="submit">Search for patients</button> </a>
+
+
     <!-- Display doctor-specific tasks, like patient lists, prescriptions, etc. -->
+     <!-- Figure our what will be on this dashboard since i have updated it -->
     <ul>
         <li><a href="{% url 'staff:order_lab_test' patient_id=1 %}">Order Lab Test</a></li>
         <li><a href="{% url 'staff:add_lab_result' lab_test_id=1 %}">Add Lab Result</a></li>

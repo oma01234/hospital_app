@@ -37,7 +37,7 @@ class PatientOnlyMiddleware:
         if app_name != 'patients':
             return self.get_response(request)
 
-        if url_name == 'login' or url_name == 'register' :  # Match the name defined in your URL pattern
+        if url_name == 'login' or url_name == 'register' or url_name == 'landing' :  # Match the name defined in your URL pattern
             return self.get_response(request)
 
         # Check if the user is authenticated and is in the Patient model

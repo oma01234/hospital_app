@@ -4,6 +4,8 @@ from .forms import *
 from .models import *
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
+from staff.models import DoctorPatientMessage
+from django.contrib import messages
 
 
 def landing(request):
@@ -12,7 +14,6 @@ def landing(request):
 
 
 # Registration View
-
 def register(request):
     if request.method == 'POST':
         form = UserRegistrationForm(request.POST)
@@ -127,7 +128,9 @@ def feedback_form(request):
     if request.method == 'POST':
         form = FeedbackForm(request.POST)
         if form.is_valid():
-            form.save(patient=request.user.Patient)
+            feedback = form.save(commit=False)  # Create a feedback instance but don't save yet
+            feedback.patient = request.user.patient  # Assign the patient
+            feedback.save()  # Now save the instance
             return redirect('appointments:feedback_submitted')
     else:
         form = FeedbackForm()
@@ -147,4 +150,39 @@ def emergency_contact(request):
     emergency_service = EmergencyService.objects.filter(patient=request.user.Patient).first()  # Assuming only one service request per patient
     return render(request, 'appointments/emergency_contact.html', {'emergency_service': emergency_service})
 
+
+# This is for the patient viewing messages
+@login_required
+def patient_messages(request):
+    messages = DoctorPatientMessage.objects.filter(recipient_id=request.user.Patient.id)
+    if messages:
+        print('message')
+    else:
+        print('crazy')
+    for message in messages:
+        print(message, 'jjjj')
+    return render(request, 'patients/patient_messages.html', {'messages': messages})
+
+
+def view_message(request, message_id):
+    # Get the specific message
+    message = get_object_or_404(DoctorPatientMessage, id=message_id)
+
+    # Ensure only the recipient (patient) can view and reply
+    if message.recipient.user != request.user:
+        messages.error(request, "You are not authorized to view this message.")
+        return redirect('patients:login')  # Redirect to the patient's inbox
+
+    if request.method == 'POST':
+        reply_content = request.POST.get('patient_reply')  # Get the reply from the form
+
+        if reply_content:
+            message.patient_reply = reply_content  # Save the reply
+            message.save()
+            messages.success(request, "Your reply has been sent.")
+            return redirect('staff:patient_messages')  # Redirect back to inbox or messages list
+        else:
+            messages.error(request, "Reply content cannot be empty.")
+
+    return render(request, 'patient/view_message.html', {'message': message})
 

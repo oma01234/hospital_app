@@ -100,7 +100,7 @@
     </div>
     <div class="nav-right">
         <!-- set this to if the user is logged in as a patient -->
-        {% if user.is_authenticated %}
+        {% if user.is_authenticated and user.Patient %}
             <a href="/profile">Profile</a>
             <a href="{% url 'patients:logout' %}">Logout</a>
         {% else %}

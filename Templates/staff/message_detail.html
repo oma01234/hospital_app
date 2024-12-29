@@ -1,0 +1,14 @@
+{% extends "staff/base.html" %}
+
+{% block content %}
+
+<h1>Message Detail</h1>
+<p><strong>From:</strong> {{ message.sender.user.username }}</p>
+<p><strong>To:</strong> {{ message.recipient.user.username }}</p>
+<p><strong>Message:</strong> {{ message.message_content }}</p>
+<p><strong>Sent at:</strong> {{ message.sent_at|date:"d M Y H:i" }}</p>
+{% if message.is_read %}
+    <p><strong>Read at:</strong> {{ message.read_at|date:"d M Y H:i" }}</p>
+{% endif %}
+
+{% endblock %}

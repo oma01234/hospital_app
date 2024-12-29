@@ -23,6 +23,9 @@ urlpatterns = [
     path('emergency-contact/', views.emergency_contact, name='emergency_contact'),  # New Emergency Contact URL
     path('feedback/', views.feedback_form, name='feedback_form'),
 
+    # Patient messages
+    path('patient/messages/', views.patient_messages, name='patient_messages'),
+
     # API views
     path('api/register/', RegisterView.as_view(), name='api_register'),
     path('api/login/', LoginView.as_view(), name='api_login'),

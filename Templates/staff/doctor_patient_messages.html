@@ -31,21 +31,24 @@
 <body>
 
     <h1>Doctor-Patient Messages</h1>
+    <h3>Sending messages from Dr. {{ user.username }} to {{ patient }}</h3>
 
     {% for message in messages %}
         <div class="message-container">
             <span class="message-sender">{% if message.sender == 'doctor' %}Doctor{% else %}You{% endif %}</span><br>
             <span class="message-timestamp">{{ message.timestamp }}</span><br>
-            <p>{{ message.content }}</p>
+            <p>{{ message.message_content }} </p>
         </div>
     {% endfor %}
 
     <form method="post">
         {% csrf_token %}
-        <textarea name="message" rows="4" cols="50" placeholder="Type your message here"></textarea><br>
-        <button type="submit">Send</button>
+        {{ form.as_p }}
+        <button type="submit">Send Message</button>
     </form>
 
 </body>
 </html>
 {% endblock %}
+
+

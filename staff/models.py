@@ -183,9 +183,11 @@ class StaffMessage(models.Model):
     recipient = models.ForeignKey(Staff, related_name='received_messages', on_delete=models.CASCADE)
     message_content = models.TextField()
     sent_at = models.DateTimeField(auto_now_add=True)
+    is_read = models.BooleanField(default=False)  # Track read status
+    read_at = models.DateTimeField(null=True, blank=True)  # Timestamp for when it was read
 
     def __str__(self):
-        return f"Message from {self.sender.username} to {self.recipient.username} at {self.sent_at}"
+        return f"Message from {self.sender.user.username} to {self.recipient.user.username} at {self.sent_at}"
 
 
 class DoctorPatientMessage(models.Model):
@@ -193,9 +195,10 @@ class DoctorPatientMessage(models.Model):
     recipient = models.ForeignKey(Patient, related_name='received_messages', on_delete=models.CASCADE)
     message_content = models.TextField()
     sent_at = models.DateTimeField(auto_now_add=True)
+    patient_reply = models.CharField(max_length=500, default='')
 
     def __str__(self):
-        return f"Message from {self.sender.username} to {self.recipient} at {self.sent_at}"
+        return f"Message from {self.sender.user.username} to {self.recipient} at {self.sent_at}"
 
 
 class TeamMessage(models.Model):
