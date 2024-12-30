@@ -13,6 +13,7 @@
     <!-- Display doctor-specific tasks, like patient lists, prescriptions, etc. -->
      <!-- Figure our what will be on this dashboard since i have updated it -->
     <ul>
+        <li><a href="{% url 'appointments:book_appointment' %}" class="btn btn-primary">View Appointments</a></li>
         <li><a href="{% url 'staff:order_lab_test' patient_id=1 %}">Order Lab Test</a></li>
         <li><a href="{% url 'staff:add_lab_result' lab_test_id=1 %}">Add Lab Result</a></li>
         <li><a href="{% url 'staff:prescribe_medication' patient_id=1 %}">Prescribe Medication</a></li>
@@ -23,6 +24,7 @@
         <li><a href="{% url 'staff:staff_certifications' staff_id=1 %}">Staff Certifications</a></li>
         <!-- <li><a href="#">Notifications</a></li> sort this guy out -->
         <li><a href="{% url 'staff:send_staff_message' %}">Send Staff message </a></li>
+        <li><a href="{% url 'staff:doctor_schedule' %}">Create Schedule </a></li>
         <li><a href="{% url 'staff:doctor_patient_messages' patient_id=1 %}">Send Patient Message </a></li>
         <li><a href="{% url 'staff:team_collaboration' patient_id=1 %}">Team Messages</a></li>
     </ul>

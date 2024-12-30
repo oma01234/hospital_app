@@ -17,6 +17,7 @@ urlpatterns = [
     path('profile/', views.profile, name='profile'),
     path('profile/update/', views.update_profile, name='update_profile'),
 
+    path('message/<int:message_id>/', views.view_message, name='view_message'),
     path('medication-reminders/', views.medication_reminders, name='medication_reminders'),
     # path('bill-list/', views.bill_list, name='bill_list'),
     path('treatment-plans/', views.treatment_plans, name='treatment_plans'),  # New Treatment Plans URL

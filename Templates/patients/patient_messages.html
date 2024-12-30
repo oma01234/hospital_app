@@ -19,7 +19,7 @@
             {% if message.patient_reply %}
                 <strong>Your Reply:</strong> {{ message.patient_reply }}
             {% else %}
-                <a href="{% url 'view_message' message.id %}">Reply</a>
+                <a href="{% url 'patients:view_message' message.id %}">Reply</a>
             {% endif %}
         </li>
     {% endfor %}

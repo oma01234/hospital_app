@@ -57,6 +57,7 @@ urlpatterns = [
     path('doctor/schedule/', views.doctor_schedule, name='doctor_schedule'),
 
     # Appointment management
+    path('assign_appointment/<int:patient_id>/', views.assign_appointment, name='assign_appointment'),
     path('appointment/<int:appointment_id>/', views.view_appointment, name='view_appointment'),
     path('appointment/<int:appointment_id>/add_note/', views.add_consultation_note, name='add_consultation_note'),
 
@@ -131,7 +132,7 @@ urlpatterns = [
     path('health-and-safety-protocols/', views.health_and_safety_protocols, name='health_and_safety_protocols'),
     path('infection-control-practices/', views.infection_control_practices, name='infection_control_practices'),
 
-    path('staff/', views.staff_list, name='staff-list'),  # URL for listing all staff members
+    path('staff/', views.staff_list, name='staff_list'),  # URL for listing all staff members
     path('staff/<int:staff_id>/certifications/', views.staff_certifications, name='staff_certifications'),
     # URL for showing certifications for a specific staff member
 

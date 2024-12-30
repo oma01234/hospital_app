@@ -19,7 +19,7 @@ class Staff(models.Model):
     profile_picture = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
 
     def __str__(self):
-        return f"{self.user.username} ({self.role})"
+        return f"{self.user.username} || ({self.role})"
 
     @property
     def is_doctor(self):
@@ -27,37 +27,70 @@ class Staff(models.Model):
 
 
 class DoctorSchedule(models.Model):
+    doctor = models.OneToOneField(Staff, on_delete=models.CASCADE, related_name='doctor_schedule', null=True)
+    monday_start = models.TimeField(null=True, blank=True)
+    monday_end = models.TimeField(null=True, blank=True)
+    tuesday_start = models.TimeField(null=True, blank=True)
+    tuesday_end = models.TimeField(null=True, blank=True)
+    wednesday_start = models.TimeField(null=True, blank=True)
+    wednesday_end = models.TimeField(null=True, blank=True)
+    thursday_start = models.TimeField(null=True, blank=True)
+    thursday_end = models.TimeField(null=True, blank=True)
+    friday_start = models.TimeField(null=True, blank=True)
+    friday_end = models.TimeField(null=True, blank=True)
+    saturday_start = models.TimeField(null=True, blank=True)
+    saturday_end = models.TimeField(null=True, blank=True)
+    sunday_start = models.TimeField(null=True, blank=True)
+    sunday_end = models.TimeField(null=True, blank=True)
+
     def clean(self):
         # Ensure only doctors can have a schedule
         if self.doctor.role != 'doctor':
-            raise ValidationError("Only staff members with the role 'Doctor' can have a schedule.")
+            raise ValidationError("Only staff members with the role 'doctor' can have a schedule.")
 
-        # Ensure start times are before end times
+        # Validate start and end times for each day
         for day in ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']:
             start_time = getattr(self, f"{day}_start")
             end_time = getattr(self, f"{day}_end")
-            if start_time >= end_time:
-                raise ValidationError(f"Invalid schedule: {day.capitalize()} start time must be before end time.")
+            if start_time and end_time and start_time >= end_time:
+                raise ValidationError(f"Invalid schedule: {day.capitalize()} start time must be earlier than end time.")
 
     def __str__(self):
         return f"Schedule for {self.doctor.user.username}"
 
 
 class Appointment(models.Model):
+    linked_appointment = models.OneToOneField(
+        'appointments.Appointment',
+        on_delete=models.CASCADE,
+        related_name='staff_appointment',
+        null=True,
+        blank=True,
+    )
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='staff_appointment_patient')
-    doctor = models.ForeignKey(Staff, on_delete=models.CASCADE, related_name='appointments_assigned')
+    doctor = models.ForeignKey(
+        Staff, on_delete=models.CASCADE, related_name='appointments_assigned'
+    )  # Doctor assigned to the appointment
+    created_by = models.ForeignKey(
+        Staff, on_delete=models.SET_NULL, null=True, blank=True, related_name='created_appointments'
+    )  # Staff member creating the appointment
     scheduled_time = models.DateTimeField()
-    reason = models.TextField(blank=True, null=True)  # Make reason optional
-    status = models.CharField(max_length=20, choices=[('scheduled', 'Scheduled'), ('completed', 'Completed'),
-                                                      ('canceled', 'Canceled')], default='scheduled')
+    reason = models.TextField(blank=True, null=True)
+    status = models.CharField(
+        max_length=20,
+        choices=[('scheduled', 'Scheduled'), ('completed', 'Completed'), ('canceled', 'Canceled')],
+        default='scheduled'
+    )
 
     class Meta:
         constraints = [
             models.UniqueConstraint(fields=['patient', 'doctor', 'scheduled_time'], name='unique_appointment')
         ]
-    
+
     def __str__(self):
-        return f"Appointment for {self.patient.user.username} with Dr. {self.doctor.user.username}"
+        created_by_name = self.created_by.user.username if self.created_by else "Unknown"
+        return (f"Appointment for {self.patient.user.username} with Dr. {self.doctor.user.username} ||"
+                f" Created by {created_by_name}")
 
     def complete_appointment(self):
         self.status = 'completed'

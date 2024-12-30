@@ -51,6 +51,7 @@
     <a href="{% url 'staff:add_progress_tracking' patient.id %}">Add Progress Tracking</a>
 
     <ul>
+        <li><a href="{% url 'staff:assign_appointment' patient.id %}" class="btn btn-primary">Book appointment</a></li>
         <li><a href="{% url 'staff:order_lab_test' patient_id=patient.id %}">Order Lab Test</a></li>
         <li><a href="{% url 'staff:add_lab_result' lab_test_id=1 %}">Add Lab Result</a></li>
         <li><a href="{% url 'staff:prescribe_medication' patient_id=patient.id %}">Prescribe Medication</a></li>
@@ -88,8 +89,9 @@
     <a href="{% url 'staff:add_vitals' patient.id %}">Add Vitals</a>
 
     <ul>
+        <li><a href="{% url 'staff:assign_appointment' patient.id %}" class="btn btn-primary">Book appointment</a></li>
         <li><a href="{% url 'staff:view_lab_tests' patient_id=patient.id %}">View Lab Tests</a></li>
-        <li><a href="{% url 'staff:patient_messages' %}">Patient Messages</a></li>
+        <li><a href="#">Patient Messages</a></li>
         <li><a href="{% url 'staff:team_collaboration' patient_id=patient.id %}">Team Collaboration</a></li>
         <li><a href="{% url 'staff:emergency_alert_list' %}">Emergency Alerts</a></li>
         <li><a href="{% url 'staff:acknowledge_alert' pk=1 %}">Acknowledge Alert</a></li>
@@ -97,7 +99,7 @@
         <li><a href="{% url 'staff:stock_alerts' %}">Stock Alerts</a></li>
         <li><a href="{% url 'staff:medical_supply_inventory' %}">Medical Supply Inventory</a></li>
         <li><a href="{% url 'staff:staff_messages' %}">Staff Messages</a></li>
-        <li><a href="{% url 'staff:team_collaboration' %}">Team Collaboration</a></li>
+        <li><a href="#">Team Collaboration</a></li>
     </ul>
 
 {% elif user.staff_profile.role == 'admin' %}
@@ -106,13 +108,14 @@
         <li><a href="{% url 'staff:order_management' %}">Order Management</a></li>
         <li><a href="{% url 'staff:stock_alerts' %}">Stock Alerts</a></li>
         <li><a href="{% url 'staff:medical_supply_inventory' %}">Medical Supply Inventory</a></li>
-        <li><a href="{% url 'staff:dashboard_view' %}">Hospital Dashboard</a></li>
-        <li><a href="{% url 'staff:resource_allocation_view' %}">Resource Allocation</a></li>
+        <li><a href="{% url 'staff:dashboard' %}">Hospital Dashboard</a></li>
+        <li><a href="{% url 'staff:resource_allocation' %}">Resource Allocation</a></li>
         <li><a href="{% url 'staff:report_list' %}">Report List</a></li>
         <li><a href="{% url 'staff:audit_log_list' %}">Audit Logs</a></li>
         <li><a href="{% url 'staff:staff_list' %}">Staff List</a></li>
         <li><a href="{% url 'staff:staff_certifications' staff_id=1 %}">Staff Certifications</a></li>
-        <li><a href="{% url 'staff:notifications' %}">Notifications</a></li>
+        <li><a href="#">Notifications</a></li>
+        <li><a href="#">add send patient message, for admin</a></li>
         <li><a href="{% url 'staff:send_staff_message' %}">Send Staff Message</a></li>
     </ul>
 {% else %}

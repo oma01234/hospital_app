@@ -12,6 +12,7 @@
                     <th scope="col">Doctor</th>
                     <th scope="col">Type</th>
                     <th scope="col">Status</th>
+                    <th scope="col">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -19,9 +20,51 @@
                 <tr>
                     <td>{{ appointment.date }}</td>
                     <td>{{ appointment.time }}</td>
-                    <td>{{ appointment.doctor_name }}</td>
+                    <td>{{ appointment.doctor.user.username }}</td>
                     <td>{{ appointment.consultation_type }}</td>
-                    <td>{{ appointment.status }}</td>
+                    <td>{{ appointment.get_status_display }}</td>
+                    <td>
+                        {% if appointment.status == 'Scheduled' %}
+                            <form method="POST" action="{% url 'appointments:appointment_list' %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="appointment_id" value="{{ appointment.id }}">
+                                <button type="submit" name="action" value="cancel" class="btn btn-danger btn-sm">Cancel</button>
+                                <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#rescheduleModal-{{ appointment.id }}">Reschedule</button>
+                            </form>
+
+                            <!-- Reschedule Modal -->
+                            <div class="modal fade" id="rescheduleModal-{{ appointment.id }}" tabindex="-1" aria-labelledby="rescheduleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <form method="POST" action="{% url 'appointments:appointment_list' %}">
+                                            {% csrf_token %}
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="rescheduleModalLabel">Reschedule Appointment</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <input type="hidden" name="appointment_id" value="{{ appointment.id }}">
+                                                <div class="mb-3">
+                                                    <label for="new_date" class="form-label">New Date</label>
+                                                    <input type="date" name="new_date" class="form-control" required>
+                                                </div>
+                                                <br>
+                                                <div class="mb-3">
+                                                    <label for="new_time" class="form-label">New Time</label>
+                                                    <input type="time" name="new_time" class="form-control" required>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" name="action" value="reschedule" class="btn btn-primary">Submit Request</button>
+                                            <br> <br> <br>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -32,5 +75,6 @@
         </div>
     {% endif %}
 </div>
-{% endblock %}
 
+<br> <br> <br>
+{% endblock %}

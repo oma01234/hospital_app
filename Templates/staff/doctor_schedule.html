@@ -1,50 +1,16 @@
-<!-- doctor_schedule.html -->
+{% load custom_filters %}
+
 <h1>Manage Your Schedule</h1>
-<form method="POST">
+<form method="post">
     {% csrf_token %}
-    <!-- Monday -->
-    <label for="monday_start">Monday Start Time:</label>
-    <input type="time" name="monday_start" value="{{ schedule.monday_start }}">
-    <label for="monday_end">Monday End Time:</label>
-    <input type="time" name="monday_end" value="{{ schedule.monday_end }}">
+    {% for day in days %}
+        <div>
+            <label for="{{ day|lower }}_start">{{ day }} Start:</label>
+            <input type="time" id="{{ day|lower }}_start" name="{{ day|lower }}_start" value="{{ schedule_data|get_item:day }}.start">
 
-    <!-- Tuesday -->
-    <label for="tuesday_start">Tuesday Start Time:</label>
-    <input type="time" name="tuesday_start" value="{{ schedule.tuesday_start }}">
-    <label for="tuesday_end">Tuesday End Time:</label>
-    <input type="time" name="tuesday_end" value="{{ schedule.tuesday_end }}">
-
-    <!-- Wednesday -->
-    <label for="wednesday_start">Wednesday Start Time:</label>
-    <input type="time" name="wednesday_start" value="{{ schedule.wednesday_start }}">
-    <label for="wednesday_end">Wednesday End Time:</label>
-    <input type="time" name="wednesday_end" value="{{ schedule.wednesday_end }}">
-
-    <!-- Thursday -->
-    <label for="thursday_start">Thursday Start Time:</label>
-    <input type="time" name="thursday_start" value="{{ schedule.thursday_start }}">
-    <label for="thursday_end">Thursday End Time:</label>
-    <input type="time" name="thursday_end" value="{{ schedule.thursday_end }}">
-
-    <!-- Friday -->
-    <label for="friday_start">Friday Start Time:</label>
-    <input type="time" name="friday_start" value="{{ schedule.friday_start }}">
-    <label for="friday_end">Friday End Time:</label>
-    <input type="time" name="friday_end" value="{{ schedule.friday_end }}">
-
-    <!-- Saturday -->
-    <label for="saturday_start">Saturday Start Time:</label>
-    <input type="time" name="saturday_start" value="{{ schedule.saturday_start }}">
-    <label for="saturday_end">Saturday End Time:</label>
-    <input type="time" name="saturday_end" value="{{ schedule.saturday_end }}">
-
-    <!-- Sunday -->
-    <label for="sunday_start">Sunday Start Time:</label>
-    <input type="time" name="sunday_start" value="{{ schedule.sunday_start }}">
-    <label for="sunday_end">Sunday End Time:</label>
-    <input type="time" name="sunday_end" value="{{ schedule.sunday_end }}">
-
-    <!-- Submit button -->
+            <label for="{{ day|lower }}_end">{{ day }} End:</label>
+            <input type="time" id="{{ day|lower }}_end" name="{{ day|lower }}_end" value="{{ schedule_data|get_item:day }}.end">
+        </div>
+    {% endfor %}
     <button type="submit">Save Schedule</button>
 </form>
-

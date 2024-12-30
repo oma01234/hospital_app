@@ -104,11 +104,11 @@ def update_profile(request):
         if form.is_valid():
             # Save the form and automatically set `modified_by` in the signal
             form.save()
-            return redirect('profile_detail')  # Redirect to profile details page after saving
+            return redirect('patients:profile')  # Redirect to profile page after saving
     else:
         form = ProfileUpdateForm(instance=profile)
 
-    return render(request, 'profile/update_profile.html', {'form': form, 'profile': profile})
+    return render(request, 'patients/update_profile.html', {'form': form, 'profile': profile})
 
 
 @login_required
@@ -180,9 +180,9 @@ def view_message(request, message_id):
             message.patient_reply = reply_content  # Save the reply
             message.save()
             messages.success(request, "Your reply has been sent.")
-            return redirect('staff:patient_messages')  # Redirect back to inbox or messages list
+            return redirect('patients:patient_messages')  # Redirect back to inbox or messages list
         else:
             messages.error(request, "Reply content cannot be empty.")
 
-    return render(request, 'patient/view_message.html', {'message': message})
+    return render(request, 'patients/view_messages.html', {'message': message})
 

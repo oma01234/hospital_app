@@ -14,6 +14,8 @@ from django.contrib import messages
 from patients.models import Profile
 from urllib.parse import urlencode
 from django.utils.timezone import now
+from datetime import timedelta, datetime
+
 
 def register(request):
     if request.method == 'POST':
@@ -104,12 +106,18 @@ def doctor_view(request):
 
 @login_required
 def doctor_schedule(request):
+    days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
+    capitalized_days = [day.capitalize() for day in days]
+
     # Ensure the user is a doctor
     if not hasattr(request.user, 'staff_profile') or request.user.staff_profile.role != 'doctor':
         return redirect('staff:unauthorized')  # Or return an appropriate HTTP 403 response
 
     # Get or create the doctor's schedule
-    schedule, created = DoctorSchedule.objects.get_or_create(doctor=request.user)
+    doctor = request.user.staff_profile
+    schedule, created = DoctorSchedule.objects.get_or_create(id=request.user.id, doctor=doctor)
+    schedule_data = {day: {'start': getattr(schedule, f'{day}_start'), 'end': getattr(schedule, f'{day}_end')} for day
+                     in days}
 
     if request.method == 'POST':
         days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
@@ -117,7 +125,7 @@ def doctor_schedule(request):
             start_time = request.POST.get(f'{day}_start')
             end_time = request.POST.get(f'{day}_end')
 
-            # Validate the input
+            # Validate and assign the times
             if start_time and end_time:
                 if start_time >= end_time:
                     messages.error(request, f"{day.capitalize()} start time must be earlier than end time.")
@@ -131,41 +139,87 @@ def doctor_schedule(request):
                 return render(request, 'staff/doctor_schedule.html', {'schedule': schedule})
 
         # Save the schedule if validation passes
-        schedule.save()
-        messages.success(request, "Schedule updated successfully!")
-        return redirect('doctor_schedule')
+        try:
+            schedule.full_clean()  # Validate the model
+            schedule.save()
+            messages.success(request, "Schedule updated successfully!")
+        except ValidationError as e:
+            messages.error(request, f"Validation error: {e.message_dict}")
+        return redirect('staff:doctor_schedule')
 
-    return render(request, 'staff/doctor_schedule.html', {'schedule': schedule})
+    return render(request, 'staff/doctor_schedule.html', {'schedule': schedule, 'days':capitalized_days, 'schedule_data': schedule_data})
 
 
 def unauthorized(request):
     return render(request, 'staff/unauthorized.html', status=403)
 
 
-def assign_appointment(patient, reason, date_time):
-    available_doctors = User.objects.filter(staff__role='doctor')  # Filtering for doctors
 
-    for doctor in available_doctors:
-        schedule = doctor.schedule
-        if schedule.monday_start <= date_time.time() <= schedule.monday_end:  # Check availability
-            appointment = Appointment.objects.create(
-                patient=patient,
-                doctor=doctor,
-                scheduled_time=date_time,
-                reason=reason,
-                status='scheduled'
-            )
-            return appointment
-    return None  # Return None if no doctor is available
+def assign_appointment(request, patient_id):
+    patient = get_object_or_404(Patient, id=patient_id)
+    available_doctors = Staff.objects.filter(role='doctor')
+
+    if request.method == 'POST':
+        reason = request.POST.get('reason')
+        date_time = datetime.strptime(request.POST.get('date_time'), '%Y-%m-%dT%H:%M')
+        day_of_week = date_time.strftime('%A').lower()  # Get the day of the week (e.g., 'monday')
+
+        # Check if there are available doctors
+        available_doctors = Staff.objects.filter(role='doctor')
+        if not available_doctors.exists():
+            messages.error(request, "No doctors available.")
+            return redirect('staff:assign_appointment', patient_id=patient.id)
+
+        for doctor in available_doctors:
+            if doctor.doctor_schedule:
+                schedule = doctor.doctor_schedule
+                start_time = getattr(schedule, f"{day_of_week}_start", None)
+                end_time = getattr(schedule, f"{day_of_week}_end", None)
+
+                if start_time and end_time and start_time <= date_time.time() <= end_time:
+                    # Check for conflicting appointments
+                    conflicting_appointments = Appointment.objects.filter(
+                        doctor=doctor,
+                        scheduled_time__gte=date_time,
+                        scheduled_time__lt=date_time + timedelta(minutes=30)
+                    )
+                    if not conflicting_appointments.exists():
+                        # Create the appointment and include created_by
+                        created_by = request.user.staff_profile  # Assuming the logged-in user has a staff profile
+                        appointment = Appointment.objects.create(
+                            patient=patient,
+                            doctor=doctor,
+                            created_by=created_by,
+                            scheduled_time=date_time,
+                            reason=reason,
+                            status='scheduled'
+                        )
+                        messages.success(request, f"Appointment scheduled with Dr. {doctor.user.get_full_name()}")
+                        return redirect('staff:display_patient', patient_id=patient.id)
+
+            else:
+                # Handle the case where the doctor doesn't have a schedule
+                # (e.g., display a message or skip this doctor in the loop)
+                pass
+
+        messages.error(request, "No doctors are available at the selected time.")
+        return redirect('staff:assign_appointment', patient_id=patient.id)
+
+    return render(request, 'staff/assign_appointment.html', {'patient': patient, 'doctors': available_doctors})
 
 
 @login_required
 def view_appointment(request, appointment_id):
-    appointment = get_object_or_404(Appointment, id=appointment_id)
-    if appointment.doctor != request.user:
+    # Get the appointment and ensure it's not cancelled
+    appointment = get_object_or_404(Appointment, id=appointment_id, status__ne='Cancelled')
+
+    # Check if the logged-in user is the doctor for the appointment
+    if appointment.doctor != request.user.Staff:
         return redirect('unauthorized')
 
+    # Fetch the consultation note if it exists
     note = ConsultationNote.objects.filter(appointment=appointment).first()
+
     return render(request, 'staff/view_appointment.html', {'appointment': appointment, 'note': note})
 
 
@@ -295,7 +349,7 @@ def view_progress_tracking(request, patient_id):
 
 @login_required
 def add_care_plan(request, patient_id):
-    patient = get_object_or_404(User, id=patient_id)
+    patient = get_object_or_404(Patient, id=patient_id)
     if request.method == 'POST':
         plan_description = request.POST['plan_description']
         CarePlan.objects.create(
@@ -629,7 +683,7 @@ def dashboard_view(request):
 @login_required
 def resource_allocation_view(request):
     resources = ResourceAllocation.objects.all()
-    return render(request, 'resource_allocation.html', {'resources': resources})
+    return render(request, 'staff/resource_allocation.html', {'resources': resources})
 
 
 @login_required
@@ -680,7 +734,7 @@ def infection_control_practices(request):
 @login_required
 def staff_list(request):
     staff_members = Staff.objects.all()  # Get all staff members
-    return render(request, 'staff/staff_list.html', {'staff_members': staff_members})
+    return render(request, 'staff/staff_list.html', {'staff': staff_members})
 
 
 @login_required

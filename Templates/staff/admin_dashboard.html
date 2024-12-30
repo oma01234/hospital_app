@@ -16,13 +16,13 @@
         <li><a href="{% url 'staff:order_management' %}">Order Management</a></li>
         <li><a href="{% url 'staff:stock_alerts' %}">Stock Alerts</a></li>
         <li><a href="{% url 'staff:medical_supply_inventory' %}">Medical Supply Inventory</a></li>
-        <li><a href="{% url 'staff:dashboard_view' %}">Hospital Dashboard</a></li>
-        <li><a href="{% url 'staff:resource_allocation_view' %}">Resource Allocation</a></li>
+        <li><a href="{% url 'staff:dashboard' %}">Hospital Dashboard</a></li>
+        <li><a href="{% url 'staff:resource_allocation' %}">Resource Allocation</a></li>
         <li><a href="{% url 'staff:report_list' %}">Report List</a></li>
         <li><a href="{% url 'staff:audit_log_list' %}">Audit Logs</a></li>
         <li><a href="{% url 'staff:staff_list' %}">Staff List</a></li>
         <li><a href="{% url 'staff:staff_certifications' staff_id=1 %}">Staff Certifications</a></li>
-        <li><a href="{% url 'staff:notifications' %}">Notifications</a></li>
+<!--        <li><a href="#">Notifications</a></li>-->
         <li><a href="{% url 'staff:send_staff_message' %}"> Send Staff Message </a></li>
     </ul>
 {% endblock %}
