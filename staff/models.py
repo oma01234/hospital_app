@@ -409,7 +409,7 @@ class Report(models.Model):
 
 
 class AuditLog(models.Model):
-    user = models.ForeignKey(Staff, on_delete=models.CASCADE, related_name='audit_logs')
+    user = models.ForeignKey(Staff, on_delete=models.CASCADE, related_name='audit_logs', null=True)
     action = models.CharField(max_length=255)
     model_name = models.CharField(max_length=100)
     model_instance_id = models.IntegerField()

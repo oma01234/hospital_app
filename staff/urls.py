@@ -51,6 +51,7 @@ urlpatterns = [
 
     path('search/', views.search_patient, name='search_patient'),
     path('patient/<int:patient_id>/', views.display_patient, name='display_patient'),
+    path('patient/<int:patient_i>/appointments/', views.view_patient_appointments, name='view_patient_appointments'),
 
     # Doctor-specific views
     path('doctor/', views.doctor_view, name='doctor_view'),

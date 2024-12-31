@@ -52,6 +52,7 @@
 
     <ul>
         <li><a href="{% url 'staff:assign_appointment' patient.id %}" class="btn btn-primary">Book appointment</a></li>
+        <li><a href="{% url 'staff:view_patient_appointments' patient.id %}" class="btn btn-primary">View Patient Appointments</a></li>
         <li><a href="{% url 'staff:order_lab_test' patient_id=patient.id %}">Order Lab Test</a></li>
         <li><a href="{% url 'staff:add_lab_result' lab_test_id=1 %}">Add Lab Result</a></li>
         <li><a href="{% url 'staff:prescribe_medication' patient_id=patient.id %}">Prescribe Medication</a></li>
@@ -89,6 +90,7 @@
     <a href="{% url 'staff:add_vitals' patient.id %}">Add Vitals</a>
 
     <ul>
+        <li><a href="{% url 'staff:view_patient_appointments' patient.id %}" class="btn btn-primary">View Patient Appointments</a></li>
         <li><a href="{% url 'staff:assign_appointment' patient.id %}" class="btn btn-primary">Book appointment</a></li>
         <li><a href="{% url 'staff:view_lab_tests' patient_id=patient.id %}">View Lab Tests</a></li>
         <li><a href="#">Patient Messages</a></li>
@@ -105,6 +107,7 @@
 {% elif user.staff_profile.role == 'admin' %}
     <h3>Admin Actions</h3>
     <ul>
+        <li><a href="{% url 'staff:view_patient_appointments' patient.id %}" class="btn btn-primary">View Patient Appointments</a></li>
         <li><a href="{% url 'staff:order_management' %}">Order Management</a></li>
         <li><a href="{% url 'staff:stock_alerts' %}">Stock Alerts</a></li>
         <li><a href="{% url 'staff:medical_supply_inventory' %}">Medical Supply Inventory</a></li>

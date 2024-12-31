@@ -1,0 +1,33 @@
+{% extends "staff/base.html" %}
+{% load static %}
+
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Appointments</title>
+</head>
+<body>
+    <h1>Appointments for {{ patient.user.username }}</h1>
+
+    {% if appointments %}
+        <ul>
+            {% for appointment in appointments %}
+                <li>
+                    <strong>Date:</strong> {{ appointment.scheduled_time.date }}<br>
+                    <strong>Time:</strong> {{ appointment.scheduled_time.time }}<br>
+                    <strong>Doctor:</strong> {{ appointment.doctor.user.username }}<br>
+                    <strong>Status:</strong> {{ appointment.status }}<br>
+                    <br> <br>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No appointments found for this patient.</p>
+    {% endif %}
+</body>
+</html>
+{% endblock %}

@@ -15,7 +15,7 @@ from patients.models import Profile
 from urllib.parse import urlencode
 from django.utils.timezone import now
 from datetime import timedelta, datetime
-
+from staff.models import Appointment as APP
 
 def register(request):
     if request.method == 'POST':
@@ -194,6 +194,7 @@ def assign_appointment(request, patient_id):
                             reason=reason,
                             status='scheduled'
                         )
+                        print('created_for_3')
                         messages.success(request, f"Appointment scheduled with Dr. {doctor.user.get_full_name()}")
                         return redirect('staff:display_patient', patient_id=patient.id)
 
@@ -222,6 +223,22 @@ def view_appointment(request, appointment_id):
 
     return render(request, 'staff/view_appointment.html', {'appointment': appointment, 'note': note})
 
+
+def view_patient_appointments(request, patient_i):
+    # Fetch the patient object
+    patient = get_object_or_404(Patient, id=patient_i)
+
+    # Fetch all appointments for the patient
+    appointments = APP.objects.filter(patient_id=patient_i)
+    # for app in appointments:
+    #     date = app.scheduled_time.date()  # Corrected to call the 'date' method
+    #     time = app.scheduled_time.time()
+
+        # Render the appointments in the template
+    return render(request, 'staff/patient_appointments.html', {
+        'patient': patient,
+        'appointments': appointments,
+    })
 
 @login_required
 def add_consultation_note(request, appointment_id):

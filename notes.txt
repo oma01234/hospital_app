@@ -121,6 +121,4 @@ adjust the api_views for all apps where necessary - tokens where necessary
 
 qC096d5!j3h#d$sf
 
-for the appointment kini, what i want is that when a staff (most likely a user with nurse role) creates an appointment for the patient, it updates the model
-on the patient side so the patient can see it and the same when the patient creates an apppointment, it updates on the
-doctor side that they have an appointment - so that way, it is kind of linked
+add print statements for the creating appointment stuff to know where the unique constraint issues
