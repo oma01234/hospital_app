@@ -123,9 +123,11 @@ urlpatterns = [
 
     path('resource-allocation/', resource_allocation_view, name='resource_allocation'),
 
-    path('reports/', report_list, name='report_list'),
-    path('reports/<int:report_id>/', report_detail, name='report_detail'),
-    path('reports/download/<int:report_id>/', download_report, name='download_report'),
+    path('reports/<int:patient_id>/', views.report_list, name='report_list'),
+    path('report/<int:report_id>/', views.report_detail, name='report_detail'),
+    path('report/create/<int:patient_id>/', views.create_report, name='create_report'),
+    path('report/download/<int:report_id>/', views.download_report, name='download_report'),
+
 
     path('audit-logs/', audit_log_list, name='audit_log_list'),
     path('audit-logs/<int:log_id>/', audit_log_detail, name='audit_log_detail'),

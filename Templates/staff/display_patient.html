@@ -58,6 +58,7 @@
         <li><a href="{% url 'staff:prescribe_medication' patient_id=patient.id %}">Prescribe Medication</a></li>
         <li><a href="{% url 'staff:view_prescriptions' patient_id=patient.id %}">View Prescriptions</a></li>
         <li><a href="{% url 'staff:doctor_patient_messages' patient_id=patient.id %}">Patient Messages</a></li>
+        <li><a href="{% url 'staff:report_list' patient.id %}" class="btn btn-primary">View Reports</a></li>
         <li><a href="{% url 'staff:health_and_safety_protocols' %}">Health & Safety Protocols</a></li>
         <li><a href="{% url 'staff:infection_control_practices' %}">Infection Control Practices</a></li>
         <li><a href="{% url 'staff:staff_certifications' staff_id=1 %}">Staff Certifications</a></li>
@@ -94,6 +95,7 @@
         <li><a href="{% url 'staff:assign_appointment' patient.id %}" class="btn btn-primary">Book appointment</a></li>
         <li><a href="{% url 'staff:view_lab_tests' patient_id=patient.id %}">View Lab Tests</a></li>
         <li><a href="#">Patient Messages</a></li>
+        <li><a href="{% url 'staff:report_list' patient.id %}" class="btn btn-primary">View Reports</a></li>
         <li><a href="{% url 'staff:team_collaboration' patient_id=patient.id %}">Team Collaboration</a></li>
         <li><a href="{% url 'staff:emergency_alert_list' %}">Emergency Alerts</a></li>
         <li><a href="{% url 'staff:acknowledge_alert' pk=1 %}">Acknowledge Alert</a></li>
@@ -112,6 +114,7 @@
         <li><a href="{% url 'staff:stock_alerts' %}">Stock Alerts</a></li>
         <li><a href="{% url 'staff:medical_supply_inventory' %}">Medical Supply Inventory</a></li>
         <li><a href="{% url 'staff:dashboard' %}">Hospital Dashboard</a></li>
+        <li><a href="{% url 'staff:report_list' patient.id %}" class="btn btn-primary">View Reports</a></li>
         <li><a href="{% url 'staff:resource_allocation' %}">Resource Allocation</a></li>
         <li><a href="{% url 'staff:report_list' %}">Report List</a></li>
         <li><a href="{% url 'staff:audit_log_list' %}">Audit Logs</a></li>

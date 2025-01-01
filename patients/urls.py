@@ -27,6 +27,10 @@ urlpatterns = [
     # Patient messages
     path('patient/messages/', views.patient_messages, name='patient_messages'),
 
+    path('reports/', views.report_list, name='report_list'),
+    path('report/<int:report_id>/', views.report_detail, name='report_detail'),
+    path('report/download/<int:report_id>/', views.download_report, name='download_report'),
+
     # API views
     path('api/register/', RegisterView.as_view(), name='api_register'),
     path('api/login/', LoginView.as_view(), name='api_login'),

@@ -88,7 +88,7 @@ class Appointment(models.Model):
         ]
 
     def __str__(self):
-        created_by_name = self.created_by.user.username if self.created_by else "Unknown"
+        created_by_name = self.created_by.user.username if self.created_by else "Patient"
         return (f"Appointment for {self.patient.user.username} with Dr. {self.doctor.user.username} ||"
                 f" Created by {created_by_name}")
 
@@ -400,6 +400,7 @@ class Report(models.Model):
         choices=[('patient_care', 'Patient Care'), ('financial', 'Financial'), ('performance', 'Performance')]
     )
     generated_at = models.DateTimeField(auto_now_add=True)
+    generated_for = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='patient_reports')
     generated_by = models.ForeignKey(Staff, on_delete=models.CASCADE, related_name='reports')
     file_path = models.FileField(upload_to='reports/', null=True, blank=True)
 

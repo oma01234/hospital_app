@@ -704,16 +704,35 @@ def resource_allocation_view(request):
 
 
 @login_required
-def download_report(request, report_id):
-    report = Report.objects.get(id=report_id)
-    return FileResponse(open(report.file_path.path, 'rb'), content_type='application/pdf')
+def create_report(request, patient_id):
+    patient = get_object_or_404(Patient, id=patient_id)
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        report_type = request.POST.get('report_type')
+        file_path = request.FILES.get('file_path')
+
+        report = Report.objects.create(
+            title=title,
+            report_type=report_type,
+            generated_for=patient,
+            generated_by=request.user.staff_profile,  # Assuming logged-in user is staff
+            file_path=file_path,
+        )
+        return redirect('staff:report_list', patient_id=patient.id)
+
+    return render(request, 'staff/create_report.html', {'patient': patient})
 
 
 @login_required
-def report_list(request):
-    reports = Report.objects.all()
-    return render(request, 'staff/report_list.html', {'reports': reports})
+def download_report(request, report_id):
+    report = get_object_or_404(Report, id=report_id)
+    return FileResponse(open(report.file_path.path, 'rb'), content_type='application/pdf')
 
+@login_required
+def report_list(request, patient_id):
+    patient = get_object_or_404(Patient, id=patient_id)
+    reports = Report.objects.filter(generated_for=patient)
+    return render(request, 'staff/report_list.html', {'reports': reports, 'patient': patient})
 
 @login_required
 def report_detail(request, report_id):

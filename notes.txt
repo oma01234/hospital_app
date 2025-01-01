@@ -121,4 +121,11 @@ adjust the api_views for all apps where necessary - tokens where necessary
 
 qC096d5!j3h#d$sf
 
-add print statements for the creating appointment stuff to know where the unique constraint issues
+add a view likely symptoms view?
+the records kini, make it downloadable for both staff and patients, create view where staff can create records for a
+particular patient, most likely will the display_patient patient_id, link the record to the patient,
+
+test the medication reminders, don't know exactly what its for sha
+
+Patient Education: Offer educational resources on various health topics to empower patients to make
+informed decisions about their health.

@@ -1,0 +1,11 @@
+{% extends 'patients/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Report Details</h2>
+    <p><strong>Title:</strong> {{ report.title }}</p>
+    <p><strong>Type:</strong> {{ report.get_report_type_display }}</p>
+    <p><strong>Generated At:</strong> {{ report.generated_at }}</p>
+    <a href="{% url 'patients:download_report' report.id %}" class="btn btn-secondary">Download Report</a>
+</div>
+{% endblock %}

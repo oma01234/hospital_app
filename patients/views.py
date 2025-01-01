@@ -4,8 +4,9 @@ from .forms import *
 from .models import *
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
-from staff.models import DoctorPatientMessage
+from staff.models import DoctorPatientMessage, Report
 from django.contrib import messages
+from django.http import FileResponse
 
 
 def landing(request):
@@ -164,6 +165,7 @@ def patient_messages(request):
     return render(request, 'patients/patient_messages.html', {'messages': messages})
 
 
+@login_required
 def view_message(request, message_id):
     # Get the specific message
     message = get_object_or_404(DoctorPatientMessage, id=message_id)
@@ -186,3 +188,24 @@ def view_message(request, message_id):
 
     return render(request, 'patients/view_messages.html', {'message': message})
 
+
+@login_required
+def download_report(request, report_id):
+    # Ensure the logged-in patient can only access their reports
+    report = get_object_or_404(Report, id=report_id, generated_for=request.user.patient)
+    return FileResponse(open(report.file_path.path, 'rb'), content_type='application/pdf')
+
+
+@login_required
+def report_list(request):
+    # Filter reports to show only those belonging to the logged-in patient
+    patient = request.user.Patient  # Assuming `request.user` is linked to a `Patient` profile
+    reports = Report.objects.filter(generated_for=patient)
+    return render(request, 'patients/report_list.html', {'reports': reports})
+
+
+@login_required
+def report_detail(request, report_id):
+    # Ensure the logged-in patient can only view details of their reports
+    report = get_object_or_404(Report, id=report_id, generated_for=request.user.patient)
+    return render(request, 'patients/report_detail.html', {'report': report})

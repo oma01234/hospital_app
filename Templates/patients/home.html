@@ -110,7 +110,7 @@
                     <i class="fas fa-calendar-alt fa-3x text-primary"></i>
                     <h5 class="card-title mt-3">Appointments</h5>
                     <p class="card-text">Book and manage your appointments.</p>
-                    <a href="{% url 'appointments:book_appointment' %}" class="btn btn-primary">View Appointments</a>
+                    <a href="{% url 'appointments:book_appointment' %}" class="btn btn-primary">Book Appointment</a>
                 </div>
             </div>
         </div>
@@ -174,6 +174,19 @@
                 </div>
             </div>
         </div>
+
+        <!-- Reports -->
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="fas fa-file-medical fa-3x text-primary"></i>
+                    <h5 class="card-title mt-3">Reports</h5>
+                    <p class="card-text">Access your Reports securely.</p>
+                    <a href="{% url 'patients:report_list' %}" class="btn btn-primary">View Reports</a>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 
