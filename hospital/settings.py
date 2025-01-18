@@ -21,6 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-ag3eoo5+=87yb-69c73gzv=c8%%q070wz-qC096d5!j3h#d$sf'
+JWT_ALGORITHM = 'HS256'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -42,7 +43,10 @@ INSTALLED_APPS = [
     'records',
     'staff',
     'rest_framework',
+    'rest_framework.authtoken',
     'django_extensions',
+    "debug_toolbar",
+    "rest_framework_simplejwt",
 ]
 
 MIDDLEWARE = [
@@ -51,13 +55,14 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'staff.custom_middleware.StaffOnlyMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'patients.custom_middleware.DynamicLoginURLMiddleware',
+    # 'patients.custom_middleware.DynamicLoginURLMiddleware',
     'patients.custom_middleware.PatientOnlyMiddleware',
-    'staff.custom_middleware.DynamicLoginURLMiddleware',
-    'staff.custom_middleware.StaffOnlyMiddleware'
-
+    # 'staff.custom_middleware.DynamicLoginURLMiddleware',
+    'staff.custom_middleware.DebugToolbarExcludeAPIMiddleware',
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
 ROOT_URLCONF = 'hospital.urls'
@@ -76,6 +81,10 @@ TEMPLATES = [
             ],
         },
     },
+]
+
+INTERNAL_IPS = [
+    "127.0.0.1",
 ]
 
 WSGI_APPLICATION = 'hospital.wsgi.application'
@@ -132,3 +141,20 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication',  # Session-based auth
+        'rest_framework.authentication.BasicAuthentication',  # Basic auth
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+}
+
+
+DEBUG_TOOLBAR_CONFIG = {
+    'SHOW_TOOLBAR_CALLBACK': lambda request: True,
+}

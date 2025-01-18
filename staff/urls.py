@@ -3,9 +3,14 @@ from . import views
 from rest_framework.routers import DefaultRouter
 from .api_views import *
 from .views import *
+from django.urls import resolve
+
+
+app_name = 'staff'
 
 router = DefaultRouter()
-router.register(r'staff', StaffViewSet, basename='staff-users')
+
+router.register(r'staffs', StaffViewSet, basename='staff-users')
 router.register(r'doctors', DoctorViewSet, basename='doctor')
 router.register(r'doctor-schedules', DoctorScheduleViewSet, basename='doctor_schedule')
 router.register(r'appointments', AppointmentViewSet, basename='appointment')
@@ -30,14 +35,14 @@ router.register(r'infection-control-practices', InfectionControlPracticeViewSet,
 router.register(r'certifications', CertificationViewSet, basename='certification')
 router.register(r'notifications', NotificationViewSet, basename='notification')
 router.register(r'patients', PatientViewSet, basename='patient')
-
-app_name = 'staff'
+router.register(r'doctor-patient-messages/(?P<patient_id>\d+)/', DoctorPatientMessageList, basename='doctor-patient-messages')
 
 custom_auth_urls = [
     path('login/', LoginView.as_view(), name='staff-login'),
     path('register/', RegisterView.as_view(), name='staff-register'),
-    path('logout/', StaffViewSet.as_view({'post': 'logout'}), name='staff-logout')
-
+    path('logout/', staff_logout, name='staff-logout'),  # Use standalone logout view
+    path('test/', TestView.as_view(), name='test_view'),
+    path('api_staff_dashboard/', StaffDashboardView.as_view(), name='api_staff_dashboard'),
 ]
 
 urlpatterns = [

@@ -464,3 +464,12 @@ class Notification(models.Model):
 
     def __str__(self):
         return f"Notification for {self.recipient.username} - {self.message}"
+
+
+class TokenLog(models.Model):
+    user = models.ForeignKey(Staff, on_delete=models.CASCADE, related_name='staff_user')
+    token = models.TextField(default='')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Access token for {self.user.user.username}"

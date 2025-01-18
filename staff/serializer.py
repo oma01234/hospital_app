@@ -29,6 +29,10 @@ class RegisterSerializer(serializers.Serializer):
     username = serializers.CharField(max_length=150)
     email = serializers.EmailField()
     password = serializers.CharField(write_only=True, style={'input_type': 'password'})
+    role = serializers.ChoiceField(choices=Staff.ROLE_CHOICES, required=False)
+    specialty = serializers.CharField(required=False)
+    phone_number = serializers.CharField(required=False)
+    profile_picture = serializers.ImageField(required=False)
 
     def create(self, validated_data):
         # Create the user
@@ -38,7 +42,12 @@ class RegisterSerializer(serializers.Serializer):
             password=validated_data['password']
         )
         # Create and return a Staff instance tied to the user
-        return Staff.objects.create(user=user)
+        staff = Staff.objects.create(user=user,
+                                     role=validated_data.get('role'),
+                                     specialty=validated_data.get('specialty'),
+                                     phone_number=validated_data.get('phone_number'),
+                                     profile_picture=validated_data.get('profile_picture'))
+        return staff
 
 
 class LoginSerializer(serializers.Serializer):
@@ -87,6 +96,7 @@ class MedicalRecordSerializer(serializers.ModelSerializer):
     class Meta:
         model = MedicalRecord
         fields = ['id', 'patient', 'record_type', 'details', 'date_created']
+
 
 class LabTestSerializer(serializers.ModelSerializer):
     class Meta:

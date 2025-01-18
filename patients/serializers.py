@@ -16,9 +16,11 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 
 class RegisterSerializer(serializers.ModelSerializer):
+    phone_number = serializers.CharField(required=True)  # Add phone_number field
+
     class Meta:
         model = User
-        fields = ['username', 'password', 'email']
+        fields = ['username', 'password', 'email', 'phone_number']
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
@@ -27,7 +29,11 @@ class RegisterSerializer(serializers.ModelSerializer):
             email=validated_data['email'],
             password=validated_data['password']
         )
-        return user
+        # Create a Patient instance linked to this user
+        patient = Patient.objects.create(user=user, phone_number=validated_data['phone_number'])
+
+        return patient
+
 
 
 class MedicationReminderSerializer(serializers.ModelSerializer):

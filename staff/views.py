@@ -16,6 +16,8 @@ from urllib.parse import urlencode
 from django.utils.timezone import now
 from datetime import timedelta, datetime
 from staff.models import Appointment as APP
+from django.core.exceptions import ValidationError
+
 
 def register(request):
     if request.method == 'POST':
@@ -154,7 +156,7 @@ def unauthorized(request):
     return render(request, 'staff/unauthorized.html', status=403)
 
 
-
+@login_required
 def assign_appointment(request, patient_id):
     patient = get_object_or_404(Patient, id=patient_id)
     available_doctors = Staff.objects.filter(role='doctor')
@@ -239,6 +241,7 @@ def view_patient_appointments(request, patient_i):
         'patient': patient,
         'appointments': appointments,
     })
+
 
 @login_required
 def add_consultation_note(request, appointment_id):
@@ -325,7 +328,7 @@ def add_vitals(request, patient_id):
         weight = request.POST.get('weight', '')
         oxygen_saturation = request.POST.get('oxygen_saturation', '')
 
-        VitalSign.objects.create(
+        vital_sign = VitalSign(
             patient=patient,
             blood_pressure=blood_pressure,
             temperature=temperature,
@@ -333,7 +336,17 @@ def add_vitals(request, patient_id):
             weight=weight,
             oxygen_saturation=oxygen_saturation
         )
-        return redirect('view_vitals', patient_id=patient.id)
+
+        try:
+            vital_sign.full_clean()  # Validate the fields
+            vital_sign.save()
+            return redirect('view_vitals', patient_id=patient.id)
+        except ValidationError as e:
+            return render(request, 'staff/add_vitals.html', {
+                'patient': patient,
+                'errors': e.message_dict
+            })
+
     return render(request, 'staff/add_vitals.html', {'patient': patient})
 
 
@@ -480,6 +493,7 @@ def view_prescriptions(request, patient_id):
     return render(request, 'staff/view_prescriptions.html', {'prescriptions': prescriptions})
 
 
+@login_required
 def staff_messages(request):
     staff_messages = StaffMessage.objects.all()
     return render(request, 'staff/staff_messages.html', {'messages': staff_messages})
@@ -588,6 +602,7 @@ def doctor_patient_messages(request, patient_id):
 
 
 @login_required
+# walai i dont remember what this is for
 def team_collaboration(request, patient_id):
     team_messages = TeamMessage.objects.filter(patient_id=patient_id)
     return render(request, 'staff/team_collaboration.html', {'messages': team_messages, 'patient_id': patient_id})

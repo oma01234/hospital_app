@@ -88,3 +88,13 @@ class EmergencyService(models.Model):
 
     def __str__(self):
         return f"Emergency Request for {self.patient.username} at {self.location}"
+
+
+class TokenLog(models.Model):
+    user = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='patient_user')
+    token = models.TextField(default='')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Access token for {self.user.user.username}"
+

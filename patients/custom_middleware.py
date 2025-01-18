@@ -3,6 +3,8 @@ from django.shortcuts import redirect
 from django.urls import resolve, reverse
 from .models import Patient
 from django.http import HttpResponseForbidden
+from rest_framework_simplejwt.authentication import JWTAuthentication
+
 
 def dynamic_login_url(request):
     """
@@ -31,25 +33,27 @@ class PatientOnlyMiddleware:
         # Resolve the current request to get the URL namespace
         resolver_match = resolve(request.path)
         url_name = resolver_match.url_name
-        app_name = resolver_match.app_name  # The namespace of the URL
+        app_name = resolver_match.app_name
 
-        # Allow access to non-'staff' URLs without restrictions
+        # Allow access to non-patient URLs without restrictions
         if app_name != 'patients':
             return self.get_response(request)
 
-        if url_name == 'login' or url_name == 'register' or url_name == 'landing' or url_name == 'logout' :  # Match the name defined in your URL pattern
+        # Allow access to specific endpoints like login and register
+        if url_name in ['login', 'register', 'api_register', 'api_login']:
             return self.get_response(request)
 
-        # Check if the user is authenticated and is in the Patient model
-        if request.user.is_authenticated:
-            try:
-                Patient.objects.get(user=request.user)
-                # User is a patient member, allow the request
-                return self.get_response(request)
-            except Patient.DoesNotExist:
-                # User is not a staff member
-                return HttpResponseForbidden("Access denied. Patients only.")
+        # Authenticate using JWT
+        jwt_auth = JWTAuthentication()
+        auth_result = jwt_auth.authenticate(request)
+        print(auth_result, "nawa")
 
-        # If the user is not authenticated
-        return HttpResponseForbidden("Access denied. Please log in.")
+        if auth_result:
+            user, token = auth_result
+            # Check if the user is associated with a Patient instance
+            if user:
+                return self.get_response(request)
+
+        return HttpResponseForbidden("You must be a patient to access this resource uayua.")
+
 

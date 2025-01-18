@@ -32,17 +32,14 @@ urlpatterns = [
     path('report/download/<int:report_id>/', views.download_report, name='download_report'),
 
     # API views
-    path('api/register/', RegisterView.as_view(), name='api_register'),
-    path('api/login/', LoginView.as_view(), name='api_login'),
-    path('api/logout/', LogoutView.as_view(), name='api_logout'),
-
-    path('api/profile/', ProfileView.as_view(), name='api_profile'),
-    path('api/profile/update/', UpdateProfileView.as_view(), name='api_update_profile'),
-
-    # API endpoints for Medication & Treatment Reminders, Billing, Feedback
-    path('api/medication-reminders/', MedicationReminderViewSet.as_view, name='api_medication_reminders'),
-    path('api/treatment-plans/', TreatmentPlanViewSet.as_view, name='api_treatment_plans'),
-    # path('api/bills/', BillViewSet.as_view, name='api_bills'),
-    path('api/feedback/', FeedbackViewSet.as_view, name='api_feedback'),
-    path('api/emergency/', EmergencyServiceViewSet.as_view, name='api_emergency_services'),
+    path('api/landing/', api_landing, name='api_landing'),
+    path('api/register/', api_register, name='api_register'),
+    path('api/login/', api_login, name='api_login'),
+    path('api/logout/', api_logout, name='api_logout'),
+    path('api/profile/', api_profile, name='api_profile'),
+    path('api/profile/update/', api_update_profile, name='api_update_profile'),
+    path('api/medication-reminders/', api_medication_reminders, name='api_medication_reminders'),
+    path('api/feedback/', api_feedback, name='api_feedback'),
+    path('api/treatment-plans/', api_treatment_plans, name='api_treatment_plans'),
+    path('api/emergency-contact/', api_emergency_contact, name='api_emergency_contact'),
 ]

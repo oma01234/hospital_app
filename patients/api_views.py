@@ -1,103 +1,140 @@
-from rest_framework.views import APIView
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
-from rest_framework import status
+from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404
 from .models import *
 from .serializers import *
-from rest_framework import viewsets, permissions, generics
-from rest_framework.permissions import IsAuthenticated
-from django.shortcuts import get_object_or_404
-from rest_framework.authtoken.views import ObtainAuthToken
-from rest_framework.authtoken.models import Token
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from django.contrib.auth import authenticate, login
+from rest_framework_simplejwt.tokens import AccessToken
+import datetime
 
-class RegisterView(APIView):
-    def post(self, request):
-        serializer = RegisterSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+# API for Landing Page
+@api_view(['GET'])
+def api_landing(request):
+    return Response({"message": "Welcome to the Patients API"})
 
 
-class LoginView(ObtainAuthToken):
-    def post(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.data, context={'request': request})
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
-        token, created = Token.objects.get_or_create(user=user)
-        return Response({'token': token.key, 'user': UserSerializer(user).data})
+# API for Register
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def api_register(request):
+    serializer = RegisterSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response({"message": "User registered successfully"}, status=201)
+    return Response(serializer.errors, status=400)
 
 
-class LogoutView(generics.GenericAPIView):
-    permission_classes = [permissions.IsAuthenticated]
+# API for Login
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def api_login(request):
+    username = request.data.get('username')
+    password = request.data.get('password')
+    user = authenticate(username=username, password=password)
 
-    def post(self, request, *args, **kwargs):
-        request.auth.delete()
-        return Response({'detail': 'Successfully logged out.'}, status=status.HTTP_200_OK)
+    if user:
+        # Log the user in (optional, for Django session-based auth)
+        login(request, user)
+
+        # Generate an access token for the authenticated user
+        token = AccessToken.for_user(user)
+
+        # Get the expiration timestamp
+        expiration_timestamp = token['exp']
+
+        # Convert to a readable datetime
+        expiration_time = datetime.datetime.fromtimestamp(expiration_timestamp)
+
+        print(f"Token expires at: {expiration_time}")
+
+        # Save token to the log model
+        patient = Patient.objects.get(user=user)
+        TokenLog.objects.create(user=patient, token=str(token))
+
+        return Response({
+            "message": "Logged in successfully",
+            "token": str(token),  # Return the token as a string
+            "user_id": user.pk  # Include user ID or any other user info as needed
+        })
+
+    return Response({"error": "Invalid credentials"}, status=400)
 
 
+# API for Logout
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def api_logout(request):
+    from django.contrib.auth import logout
+    logout(request)
+    return Response({"message": "Logged out successfully"})
 
-class ProfileView(APIView):
-    def get(self, request):
-        """
-        Retrieve the profile of the currently authenticated user.
-        """
-        profile = get_object_or_404(Profile, user=request.user.Patient)
-        serializer = ProfileSerializer(profile)
+
+# API for Profile
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def api_profile(request):
+    profile = get_object_or_404(Profile, user=request.user.Patient)
+    serializer = ProfileSerializer(profile)
+    return Response(serializer.data)
+
+
+# API for Update Profile
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def api_update_profile(request):
+    profile = get_object_or_404(Profile, user=request.user.Patient)
+    serializer = ProfileSerializer(profile, data=request.data, partial=True)
+    if serializer.is_valid():
+        serializer.save()
         return Response(serializer.data)
+    return Response(serializer.errors, status=400)
 
+# API for Medication Reminders
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def api_medication_reminders(request):
+    reminders = MedicationReminder.objects.filter(patient=request.user.Patient)
+    serializer = MedicationReminderSerializer(reminders, many=True)
+    return Response(serializer.data)
 
-class UpdateProfileView(APIView):
-    def put(self, request):
-        """
-        Update the profile of the currently authenticated user.
-        """
-        profile = get_object_or_404(Profile, user=request.user.Patient)
-        serializer = ProfileSerializer(profile, data=request.data, partial=True)
+# API for Feedback
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def api_feedback(request):
+    serializer = FeedbackSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save(patient=request.user.Patient)
+        return Response({"message": "Feedback submitted successfully"})
+    return Response(serializer.errors, status=400)
 
+# API for Treatment Plans
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def api_treatment_plans(request):
+    plans = TreatmentPlan.objects.filter(patient=request.user.Patient)
+    serializer = TreatmentPlanSerializer(plans, many=True)
+    return Response(serializer.data)
+
+# API for Emergency Contact
+@api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated])
+def api_emergency_contact(request):
+    if request.method == 'GET':
+        emergency_service = EmergencyService.objects.filter(patient=request.user.Patient).first()
+        if emergency_service:
+            serializer = EmergencyServiceSerializer(emergency_service)
+            return Response(serializer.data)
+        return Response({"message": "No emergency services found"})
+
+    elif request.method == 'POST':
+        data = request.data
+        data['patient'] = request.user.Patient.id  # Link to logged-in patient
+        serializer = EmergencyServiceSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=200)
+            return Response({"message": "Emergency service request submitted"})
         return Response(serializer.errors, status=400)
-
-
-class MedicationReminderViewSet(viewsets.ModelViewSet):
-    queryset = MedicationReminder.objects.all()
-    serializer_class = MedicationReminderSerializer
-    permission_classes = [IsAuthenticated]
-
-    def perform_create(self, serializer):
-        serializer.save(patient=self.request.user.Patient)
-
-
-class TreatmentPlanViewSet(viewsets.ModelViewSet):
-    queryset = TreatmentPlan.objects.all()
-    serializer_class = TreatmentPlanSerializer
-    permission_classes = [IsAuthenticated]
-
-    def perform_create(self, serializer):
-        serializer.save(patient=self.request.user.Patient)
-
-# class BillViewSet(viewsets.ModelViewSet):
-#     queryset = Bill.objects.all()
-#     serializer_class = BillSerializer
-#     permission_classes = [IsAuthenticated]
-#
-#     def perform_create(self, serializer):
-#         serializer.save(patient=self.request.user)
-
-class FeedbackViewSet(viewsets.ModelViewSet):
-    queryset = Feedback.objects.all()
-    serializer_class = FeedbackSerializer
-    permission_classes = [IsAuthenticated]
-
-    def perform_create(self, serializer):
-        serializer.save(patient=self.request.user.Patient)
-
-
-class EmergencyServiceViewSet(viewsets.ModelViewSet):
-    queryset = EmergencyService.objects.all()
-    serializer_class = EmergencyServiceSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def perform_create(self, serializer):
-        serializer.save(patient=self.request.user.Patient)
