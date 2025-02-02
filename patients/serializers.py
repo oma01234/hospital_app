@@ -8,11 +8,23 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['id', 'username', 'email', 'first_name', 'last_name']
 
 class ProfileSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
+    user = UserSerializer(source='user.user')
 
     class Meta:
         model = Profile
-        fields = ['user', 'phone_number', 'emergency_contact', 'medical_history', 'allergies', 'insurance_details']
+        fields = [
+            'user',
+            'phone_number',
+            'emergency_contact',
+            'medical_history',
+            'allergies',
+            'insurance_details',
+            'next_of_kin_name',
+            'next_of_kin_phone_number',
+            'next_of_kin_email',
+            'next_of_kin_address',
+            'next_of_kin_relationship',
+        ]
 
 
 class RegisterSerializer(serializers.ModelSerializer):

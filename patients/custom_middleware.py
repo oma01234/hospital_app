@@ -5,7 +5,6 @@ from .models import Patient
 from django.http import HttpResponseForbidden
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-
 def dynamic_login_url(request):
     """
     Sets the login URL based on the requested URL.
@@ -40,20 +39,25 @@ class PatientOnlyMiddleware:
             return self.get_response(request)
 
         # Allow access to specific endpoints like login and register
-        if url_name in ['login', 'register', 'api_register', 'api_login']:
+        if url_name in ['landing','login', 'register', 'api_register', 'api_login', 'api_landing']:
             return self.get_response(request)
 
-        # Authenticate using JWT
         jwt_auth = JWTAuthentication()
-        auth_result = jwt_auth.authenticate(request)
-        print(auth_result, "nawa")
+        if app_name and request.path_info.startswith(f'/{app_name}/api/'):
+            # Perform JWT authentication
+            auth_result = jwt_auth.authenticate(request)
+            print(auth_result, "nawa")
 
-        if auth_result:
-            user, token = auth_result
-            # Check if the user is associated with a Patient instance
-            if user:
-                return self.get_response(request)
+            if auth_result:
+                user, token = auth_result
+                # Check if the user is associated with a Patient instance
+                if user:
+                    return self.get_response(request)
 
-        return HttpResponseForbidden("You must be a patient to access this resource uayua.")
+            # If authentication fails or user is not a patient, return forbidden response
+            return HttpResponseForbidden("You must be a patient to access this resource.")
+
+            # If the URL does not match the pattern, proceed without authentication
+        return self.get_response(request)
 
 

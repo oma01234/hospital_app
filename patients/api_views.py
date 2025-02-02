@@ -13,6 +13,7 @@ import datetime
 
 # API for Landing Page
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def api_landing(request):
     return Response({"message": "Welcome to the Patients API"})
 
@@ -77,7 +78,12 @@ def api_logout(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def api_profile(request):
-    profile = get_object_or_404(Profile, user=request.user.Patient)
+    try:
+        patient = request.user.Patient  # Get the associated Patient instance
+        profile = patient.profile  # Get the Profile linked to Patient
+    except AttributeError:
+        return Response({'error': 'Profile not found'}, status=404)
+
     serializer = ProfileSerializer(profile)
     return Response(serializer.data)
 

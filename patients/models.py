@@ -47,7 +47,7 @@ class MedicationReminder(models.Model):
     is_taken = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.medication_name} for {self.patient.username} at {self.time}"
+        return f"{self.medication_name} for {self.patient.user.username} at {self.time}"
 
 
 class TreatmentPlan(models.Model):
@@ -57,7 +57,7 @@ class TreatmentPlan(models.Model):
     progress_notes = models.TextField(null=True, blank=True)
 
     def __str__(self):
-        return f"Treatment Plan for {self.patient.username}"
+        return f"Treatment Plan for {self.patient.user.username}"
 
 #
 # class Bill(models.Model):
@@ -77,7 +77,7 @@ class Feedback(models.Model):
     comments = models.TextField()
 
     def __str__(self):
-        return f"Feedback from {self.patient.username} - Rating: {self.rating}"
+        return f"Feedback from {self.patient.user.username} - Rating: {self.rating}"
 
 
 class EmergencyService(models.Model):
@@ -87,7 +87,7 @@ class EmergencyService(models.Model):
     request_time = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Emergency Request for {self.patient.username} at {self.location}"
+        return f"Emergency Request for {self.patient.user.username} at {self.location}"
 
 
 class TokenLog(models.Model):
