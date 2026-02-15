@@ -156,14 +156,14 @@ This allows:
 ForeignKey and OneToOne relationships are used extensively to maintain relational integrity.
 
 ## 🧪 How to Run Locally
-git clone https://github.com/your-repo
-cd hospital-management-system
-python -m venv venv
-source venv/bin/activate  # or venv\Scripts\activate on Windows
-pip install -r requirements.txt
-python manage.py migrate
-python manage.py createsuperuser
-python manage.py runserver
+- git clone https://github.com/your-repo
+- cd hospital-management-system
+- python -m venv venv
+- source venv/bin/activate  # or venv\Scripts\activate on Windows
+- pip install -r requirements.txt
+- python manage.py migrate
+- python manage.py createsuperuser
+- python manage.py runserver
 
 ## 📌 Future Improvements
 - Full WebSocket real-time chat
