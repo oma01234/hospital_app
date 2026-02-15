@@ -156,7 +156,7 @@ This allows:
 ForeignKey and OneToOne relationships are used extensively to maintain relational integrity.
 
 ## 🧪 How to Run Locally
-- git clone https://github.com/your-repo
+- git clone https://github.com/oma01234/hospital_app
 - cd hospital-management-system
 - python -m venv venv
 - source venv/bin/activate  # or venv\Scripts\activate on Windows
